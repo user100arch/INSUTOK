@@ -196,7 +196,7 @@ nav{
   position: relative;
   height: 300px;
   width: 100%;
-  background: var(--surface); /* explicit for html2pdf rendering */
+  background: var(--surface);
   border-radius: 8px;
 }
 
@@ -247,6 +247,31 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 8px rgba(245,158,
 .br-row:last-child{border-bottom:none;color:var(--accent);font-weight:600;}
 .br-row span:first-child{color:var(--muted);}
 .calc-actions{margin-top:24px;display:flex;flex-direction:column;gap:10px;}
+
+/* ── RESTORED TIER STYLES ── */
+.tier-tag{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.tier h3{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.tier-price{font-size:14px;color:var(--muted);margin-bottom:28px;}
+.tier ul{list-style:none;display:flex;flex-direction:column;gap:11px;}
+.tier li{font-size:14px;display:flex;align-items:flex-start;gap:10px;line-height:1.4;}
+.tier-check{font-size:12px;font-weight:700;margin-top:1px;flex-shrink:0;}
+.tier-cta{width:100%;margin-top:28px;padding:13px;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all var(--t);border:none;}
+
+.tier.bronze{background:linear-gradient(160deg,rgba(205,127,50,0.06),var(--surface));}
+.tier.bronze .tier-tag,.tier.bronze .tier-check{color:#cd7f32;}
+.tier.bronze .tier-cta{background:rgba(205,127,50,0.12);color:#cd7f32;}
+.tier.bronze .tier-cta:hover{background:rgba(205,127,50,0.22);}
+
+.tier.silver{background:linear-gradient(160deg,rgba(160,160,200,0.08),var(--surface));border-color:var(--border2);}
+.tier.silver .tier-tag,.tier.silver .tier-check{color:#a0a0c0;}
+.tier.silver .tier-cta{background:rgba(160,160,200,0.12);color:#a0a0c0;}
+.tier.silver .tier-cta:hover{background:rgba(160,160,200,0.22);}
+
+.tier.gold{background:linear-gradient(160deg,rgba(245,158,11,0.12),var(--surface));border-color:rgba(245,158,11,0.28);}
+.tier.gold .tier-tag,.tier.gold .tier-check{color:var(--accent);}
+.tier.gold .tier-cta{background:var(--accent);color:#000;}
+.tier.gold .tier-cta:hover{background:#fbbf24;}
+.tier.gold::after{content:'RECOMMENDED';position:absolute;top:20px;right:-28px;background:var(--accent);color:#000;font-size:9px;font-weight:700;letter-spacing:0.1em;padding:5px 40px;transform:rotate(35deg);}
 
 /* ── FORMS & INPUTS ── */
 select, input[type=text], input[type=email], input[type=tel], input[type=date], input[type=number], textarea{
@@ -582,13 +607,13 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
         <h3>Starter</h3>
         <div class="tier-price">From KSh 18,000/yr · KSh 1,500/mo</div>
         <ul>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>30-day waiting period</li>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>50% income replacement</li>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Up to 30 days per claim</li>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Max 1 claim per year</li>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Illness coverage only</li>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>M-PESA payouts</li>
-          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Basic INSUTOK app</li>
+          <li><span class="tier-check">✓</span>30-day waiting period</li>
+          <li><span class="tier-check">✓</span>50% income replacement</li>
+          <li><span class="tier-check">✓</span>Up to 30 days per claim</li>
+          <li><span class="tier-check">✓</span>Max 1 claim per year</li>
+          <li><span class="tier-check">✓</span>Illness coverage only</li>
+          <li><span class="tier-check">✓</span>M-PESA payouts</li>
+          <li><span class="tier-check">✓</span>Basic INSUTOK app</li>
         </ul>
         <button class="tier-cta" onclick="openModal('Bronze')">Get Started →</button>
       </div>
@@ -615,14 +640,14 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
         <h3>Growth</h3>
         <div class="tier-price">From KSh 27,000/yr · KSh 2,250/mo</div>
         <ul>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>14-day waiting period</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>55% income replacement</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Up to 45 days per claim</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Max 2 claims per year</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Illness + brand deal loss</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>INSUTOK app access</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>M-PESA payouts</li>
-          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Claims tracking portal</li>
+          <li><span class="tier-check">✓</span>14-day waiting period</li>
+          <li><span class="tier-check">✓</span>55% income replacement</li>
+          <li><span class="tier-check">✓</span>Up to 45 days per claim</li>
+          <li><span class="tier-check">✓</span>Max 2 claims per year</li>
+          <li><span class="tier-check">✓</span>Illness + brand deal loss</li>
+          <li><span class="tier-check">✓</span>INSUTOK app access</li>
+          <li><span class="tier-check">✓</span>M-PESA payouts</li>
+          <li><span class="tier-check">✓</span>Claims tracking portal</li>
         </ul>
         <button class="tier-cta" onclick="openModal('Silver')">Get Started →</button>
       </div>
