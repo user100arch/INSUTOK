@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>INSUTOK — Income Interruption Insurance for Content Creators</title>
+<meta name="description" content="The first actuarially-priced income interruption insurance for Kenyan content creators on TikTok, YouTube, and Instagram."/>
+<meta property="og:title" content="INSUTOK — Protect Your Digital Income"/>
+<meta property="og:description" content="Income interruption insurance built for Kenyan content creators."/>
+<meta property="og:type" content="website"/>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #13161e;
+  --surface2: #1a1e2a;
+  --surface3: #212636;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf2;
+  --muted: #6e7899;
+  --accent: #f59e0b;
+  --accent-glow: rgba(245,158,11,0.18);
+  --accent2: #3b82f6;
+  --accent3: #10b981;
+  --danger: #ef4444;
+  --whatsapp: #25D366;
+  --card-radius: 18px;
+  --t: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.65;
+  overflow-x:hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(10,12,16,0.88);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;height:66px;transition:all var(--t);
+}
+.nav-logo{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:22px;
+  letter-spacing:-0.5px;color:var(--accent);text-decoration:none;
+}
+.nav-logo span{color:var(--text);}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;
+  letter-spacing:0.02em;transition:color var(--t);
+}
+.nav-links a:hover{color:var(--text);}
+.nav-actions{display:flex;gap:10px;align-items:center;}
+.nav-cta{
+  background:var(--accent);color:#000;border:none;
+  padding:9px 20px;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;
+  transition:all var(--t);
+}
+.nav-cta:hover{background:#fbbf24;transform:translateY(-1px);box-shadow:0 8px 24px var(--accent-glow);}
+.nav-wa{
+  background:var(--whatsapp);color:#fff;border:none;
+  padding:9px 16px;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;cursor:pointer;
+  transition:all var(--t);text-decoration:none;display:flex;align-items:center;gap:6px;
+}
+.nav-wa:hover{background:#1ebe5d;transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:120px 24px 80px;position:relative;overflow:hidden;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.22);
+  color:var(--accent);border-radius:100px;padding:7px 18px;
+  font-size:13px;font-weight:500;margin-bottom:36px;letter-spacing:0.04em;
+}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.85);}}
+
+.hero h1{
+  font-family:'Syne',sans-serif;font-size:clamp(44px,7vw,88px);
+  font-weight:800;line-height:1.0;letter-spacing:-2.5px;
+  margin-bottom:28px;max-width:920px;
+}
+.hero h1 .highlight{
+  color:transparent;
+  background:linear-gradient(135deg,#f59e0b 0%,#f97316 50%,#ef4444 100%);
+  -webkit-background-clip:text;background-clip:text;display:inline-block;
+}
+.hero-sub{font-size:18px;color:var(--muted);max-width:560px;margin:0 auto 52px;line-height:1.75;font-weight:300;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:56px;}
+
+.btn-primary{
+  background:var(--accent);color:#000;border:none;
+  padding:16px 36px;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;
+  transition:all var(--t);text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{background:#fbbf24;transform:translateY(-2px);box-shadow:0 16px 40px rgba(245,158,11,0.3);}
+.btn-ghost{
+  background:transparent;color:var(--text);border:1px solid var(--border2);
+  padding:16px 36px;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;cursor:pointer;
+  transition:all var(--t);text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-ghost:hover{background:var(--surface);border-color:rgba(255,255,255,0.2);}
+.btn-whatsapp{
+  background:var(--whatsapp);color:#fff;border:none;
+  padding:16px 32px;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;cursor:pointer;
+  transition:all var(--t);text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-whatsapp:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 16px 40px rgba(37,211,102,0.3);}
+
+/* trust badges */
+.trust-strip{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:center;opacity:0.55;}
+.trust-item{font-size:12px;letter-spacing:0.06em;text-transform:uppercase;font-weight:500;}
+
+/* grid bg */
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
+  background-size:52px 52px;pointer-events:none;
+}
+.hero-glow{
+  position:absolute;width:900px;height:900px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,158,11,0.07),transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none;animation:glowPulse 6s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
+
+/* ── STATS ── */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--surface);
+}
+.stat-item{
+  padding:44px 32px;text-align:center;border-right:1px solid var(--border);
+  transition:background var(--t);
+}
+.stat-item:last-child{border-right:none;}
+.stat-item:hover{background:var(--surface2);}
+.stat-num{
+  font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
+  letter-spacing:-2px;display:block;color:var(--accent);line-height:1;
+}
+.stat-label{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.4;}
+
+/* ── SECTION STRUCTURE ── */
+.section-wrap{padding:110px 48px;max-width:1240px;margin:0 auto;}
+.section-tag{
+  display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:18px;
+  background:var(--accent-glow);padding:5px 12px;border-radius:100px;
+}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:clamp(34px,4vw,54px);
+  font-weight:700;letter-spacing:-1.5px;margin-bottom:16px;line-height:1.08;
+}
+.section-sub{font-size:17px;color:var(--muted);max-width:560px;line-height:1.75;}
+
+/* ── CARDS ── */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:64px;}
+.p-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--card-radius);padding:34px;
+  position:relative;overflow:hidden;transition:all var(--t);
+}
+.p-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.p-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.p-card.c1::before{background:linear-gradient(90deg,#f59e0b,#f97316);}
+.p-card.c2::before{background:linear-gradient(90deg,#ef4444,#ec4899);}
+.p-card.c3::before{background:linear-gradient(90deg,#3b82f6,#6366f1);}
+.p-card.c4::before{background:linear-gradient(90deg,#10b981,#06b6d4);}
+.p-card.c5::before{background:linear-gradient(90deg,#8b5cf6,#ec4899);}
+.p-card.c6::before{background:linear-gradient(90deg,#f59e0b,#10b981);}
+.p-icon{font-size:34px;margin-bottom:18px;display:block;}
+.p-card h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:10px;}
+.p-card p{font-size:14px;color:var(--muted);line-height:1.65;}
+
+/* ── CALCULATOR ── */
+.calc-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:24px;padding:60px;
+}
+.calc-grid{display:grid;grid-template-columns:1fr 420px;gap:56px;align-items:start;}
+.calc-inputs{display:flex;flex-direction:column;gap:30px;}
+.input-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
+.input-row{display:flex;align-items:center;gap:14px;}
+input[type=range]{
+  flex:1;-webkit-appearance:none;height:4px;
+  background:linear-gradient(90deg,var(--accent) var(--pct,50%),var(--border2) var(--pct,50%));
+  border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--accent);cursor:pointer;
+  box-shadow:0 0 0 5px rgba(245,158,11,0.18);transition:box-shadow var(--t);
+}
+input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 8px rgba(245,158,11,0.25);}
+.range-val{
+  font-family:'DM Mono',monospace;font-size:14px;
+  color:var(--accent);min-width:90px;text-align:right;font-weight:500;
+}
+select{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  color:var(--text);padding:13px 16px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:15px;outline:none;cursor:pointer;
+  transition:border-color var(--t);
+}
+select:focus{border-color:var(--accent);}
+
+.calc-result{
+  background:var(--bg);border:1px solid var(--border);border-radius:18px;
+  padding:44px 36px;position:sticky;top:84px;
+}
+.big-premium{
+  font-family:'Syne',sans-serif;font-size:48px;font-weight:800;
+  color:var(--accent);letter-spacing:-2px;line-height:1;margin-bottom:4px;
+}
+.big-period{font-size:14px;color:var(--muted);margin-bottom:8px;}
+.monthly-equiv{
+  font-size:13px;color:var(--accent3);background:rgba(16,185,129,0.1);
+  border-radius:6px;padding:4px 10px;display:inline-block;margin-bottom:28px;
+}
+.breakdown-title{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.br-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;
+}
+.br-row:last-child{border-bottom:none;color:var(--accent);font-weight:600;}
+.br-row span:first-child{color:var(--muted);}
+.calc-actions{margin-top:24px;display:flex;flex-direction:column;gap:10px;}
+
+/* ── METHODOLOGY ── */
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:64px;}
+.method-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--card-radius);padding:42px;
+}
+.method-card h3{font-family:'Syne',sans-serif;font-size:21px;font-weight:700;margin-bottom:14px;}
+.formula{
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px 24px;font-family:'DM Mono',monospace;font-size:13px;
+  color:var(--accent);line-height:1.9;margin:18px 0;
+}
+.formula .c{color:var(--muted);}
+
+/* ── TIERS ── */
+.tiers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:64px;}
+.tier{
+  border-radius:var(--card-radius);padding:36px;
+  border:1px solid var(--border);position:relative;overflow:hidden;
+  transition:all var(--t);background:var(--surface);
+}
+.tier:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,0.3);}
+.tier-tag{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.tier h3{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.tier-price{font-size:14px;color:var(--muted);margin-bottom:28px;}
+.tier ul{list-style:none;display:flex;flex-direction:column;gap:11px;}
+.tier li{font-size:14px;display:flex;align-items:flex-start;gap:10px;line-height:1.4;}
+.tier-check{font-size:12px;font-weight:700;margin-top:1px;flex-shrink:0;}
+.tier-cta{
+  width:100%;margin-top:28px;padding:13px;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;
+  transition:all var(--t);border:none;
+}
+
+.tier.bronze{background:linear-gradient(160deg,rgba(205,127,50,0.06),var(--surface));}
+.tier.bronze .tier-tag,.tier.bronze .tier-check{color:#cd7f32;}
+.tier.bronze .tier-cta{background:rgba(205,127,50,0.12);color:#cd7f32;}
+.tier.bronze .tier-cta:hover{background:rgba(205,127,50,0.22);}
+
+.tier.silver{background:linear-gradient(160deg,rgba(160,160,200,0.08),var(--surface));border-color:var(--border2);}
+.tier.silver .tier-tag,.tier.silver .tier-check{color:#a0a0c0;}
+.tier.silver .tier-cta{background:rgba(160,160,200,0.12);color:#a0a0c0;}
+.tier.silver .tier-cta:hover{background:rgba(160,160,200,0.22);}
+
+.tier.gold{background:linear-gradient(160deg,rgba(245,158,11,0.12),var(--surface));border-color:rgba(245,158,11,0.28);}
+.tier.gold .tier-tag,.tier.gold .tier-check{color:var(--accent);}
+.tier.gold .tier-cta{background:var(--accent);color:#000;}
+.tier.gold .tier-cta:hover{background:#fbbf24;}
+.tier.gold::after{
+  content:'RECOMMENDED';position:absolute;top:20px;right:-28px;
+  background:var(--accent);color:#000;font-size:9px;font-weight:700;
+  letter-spacing:0.1em;padding:5px 40px;transform:rotate(35deg);
+}
+
+/* ── APP FEATURES ── */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:64px;}
+.feat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--card-radius);padding:36px;transition:all var(--t);
+}
+.feat-card:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-2px);}
+.feat-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:22px;
+}
+.feat-card h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:10px;}
+.feat-card p{font-size:14px;color:var(--muted);line-height:1.65;}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;margin-top:64px;padding-left:40px;}
+.timeline::before{
+  content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;
+  background:linear-gradient(to bottom,var(--accent),transparent);
+}
+.tl-item{position:relative;margin-bottom:52px;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-dot{
+  position:absolute;left:-47px;top:4px;
+  width:15px;height:15px;border-radius:50%;
+  background:var(--accent);border:3px solid var(--bg);
+  box-shadow:0 0 0 2px var(--accent),0 0 20px var(--accent-glow);
+}
+.tl-step{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+.tl-item h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;}
+.tl-item p{font-size:15px;color:var(--muted);max-width:580px;line-height:1.65;}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:64px;align-items:start;}
+.contact-info h3{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;margin-bottom:16px;}
+.contact-info p{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:32px;}
+.contact-methods{display:flex;flex-direction:column;gap:14px;}
+.contact-btn{
+  display:flex;align-items:center;gap:14px;padding:16px 20px;
+  border-radius:14px;text-decoration:none;border:1px solid var(--border);
+  background:var(--surface);transition:all var(--t);cursor:pointer;
+}
+.contact-btn:hover{border-color:var(--border2);background:var(--surface2);transform:translateX(4px);}
+.contact-btn-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.contact-btn-text strong{display:block;font-size:14px;font-weight:600;}
+.contact-btn-text span{font-size:12px;color:var(--muted);}
+
+/* ── CLAIM FORM ── */
+.claim-form-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:24px;padding:60px;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:28px;}
+.form-field{display:flex;flex-direction:column;gap:8px;}
+.form-field.full{grid-column:1/-1;}
+.form-field label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;}
+.form-field input,.form-field select,.form-field textarea{
+  background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);padding:14px 18px;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:15px;outline:none;
+  transition:border-color var(--t);
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent);}
+.form-field textarea{resize:vertical;min-height:110px;}
+.form-field input::placeholder,.form-field textarea::placeholder{color:var(--muted);opacity:0.6;}
+
+/* ── WAITLIST MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:24px;padding:52px;max-width:500px;width:90%;
+  transform:translateY(20px) scale(0.97);transition:transform 0.3s;
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1);}
+.modal h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;margin-bottom:10px;}
+.modal p{color:var(--muted);font-size:15px;margin-bottom:28px;line-height:1.6;}
+.modal-close{
+  position:absolute;top:16px;right:20px;background:none;border:none;
+  color:var(--muted);font-size:24px;cursor:pointer;
+}
+.modal-field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.modal-field label{font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);}
+.modal-field input,.modal-field select{
+  background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);padding:13px 16px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:15px;outline:none;
+  transition:border-color var(--t);
+}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--accent);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;right:28px;z-index:1000;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:16px;padding:16px 24px;
+  display:flex;align-items:center;gap:12px;
+  transform:translateY(90px);opacity:0;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;pointer-events:auto;}
+.toast-icon{font-size:22px;}
+.toast-msg{font-size:14px;line-height:1.4;}
+
+/* ── FAQ ── */
+.faq-list{margin-top:64px;display:flex;flex-direction:column;gap:14px;}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.faq-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:22px 28px;background:none;border:none;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;
+  cursor:pointer;text-align:left;transition:background var(--t);
+}
+.faq-q:hover{background:var(--surface2);}
+.faq-chevron{transition:transform 0.3s;color:var(--muted);font-size:18px;flex-shrink:0;}
+.faq-item.open .faq-chevron{transform:rotate(180deg);}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  font-size:15px;color:var(--muted);line-height:1.7;
+}
+.faq-item.open .faq-a{max-height:300px;}
+.faq-a-inner{padding:0 28px 22px;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding:56px 48px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:48px;
+}
+.footer-brand .logo{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--accent);
+}
+.footer-brand .logo span{color:var(--text);}
+.footer-brand p{font-size:13px;color:var(--muted);margin-top:8px;max-width:260px;line-height:1.6;}
+.footer-links{display:flex;flex-direction:column;gap:14px;align-items:center;}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color var(--t);}
+.footer-links a:hover{color:var(--text);}
+.footer-right{text-align:right;}
+.footer-right p{font-size:12px;color:var(--muted);line-height:1.7;}
+.footer-social{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
+.social-btn{
+  width:38px;height:38px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;
+  font-size:16px;text-decoration:none;transition:all var(--t);
+}
+.social-btn:hover{background:var(--surface2);border-color:var(--border2);transform:translateY(-2px);}
+
+/* ── FLOATING WHATSAPP ── */
+.fab-wa{
+  position:fixed;bottom:28px;left:28px;z-index:400;
+  background:var(--whatsapp);color:#fff;border:none;
+  width:56px;height:56px;border-radius:50%;font-size:28px;cursor:pointer;
+  box-shadow:0 8px 32px rgba(37,211,102,0.4);transition:all var(--t);
+  display:flex;align-items:center;justify-content:center;text-decoration:none;
+  animation:waFloat 3s ease-in-out infinite;
+}
+.fab-wa:hover{background:#1ebe5d;transform:scale(1.1);box-shadow:0 12px 40px rgba(37,211,102,0.5);}
+@keyframes waFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+
+/* ── FADE IN ── */
+.fade-in{opacity:0;transform:translateY(28px);transition:opacity 0.65s,transform 0.65s;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-wa{display:none;}
+  .stats-strip{grid-template-columns:1fr 1fr;}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);}
+  .section-wrap{padding:72px 20px;}
+  .problem-grid,.features-grid,.tiers-grid,.method-grid{grid-template-columns:1fr;}
+  .calc-grid{grid-template-columns:1fr;}
+  .calc-wrap{padding:32px 20px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .claim-form-wrap{padding:32px 20px;}
+  footer{grid-template-columns:1fr;text-align:left;}
+  .footer-right{text-align:left;}
+  .footer-social{justify-content:flex-start;}
+  .hero h1{letter-spacing:-1px;}
+  .tiers-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- FLOATING WHATSAPP -->
+<a class="fab-wa" href="https://wa.me/254700000000?text=Hi%20INSUTOK!%20I%27m%20interested%20in%20income%20interruption%20insurance%20for%20content%20creators." target="_blank" title="Chat on WhatsApp">💬</a>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">INSU<span>TOK</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#calculator">Calculator</a></li>
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#claim">File Claim</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="nav-wa" href="https://wa.me/254700000000?text=Hi%20INSUTOK!" target="_blank">💬 WhatsApp</a>
+    <button class="nav-cta" onclick="openModal()">Join Waitlist</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="pulse-dot"></span>🇰🇪 Designed for Kenyan Content Creators</div>
+  <h1>Protect Your<br/><span class="highlight">Digital Income</span></h1>
+  <p class="hero-sub">The first actuarially-priced income interruption insurance built specifically for content creators on TikTok, YouTube, and Instagram. When your income stops, we don't.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('calculator').scrollIntoView({behavior:'smooth'})">Calculate My Premium →</button>
+    <button class="btn-whatsapp" onclick="window.open('https://wa.me/254700000000?text=Hi%20INSUTOK!%20I%20want%20to%20learn%20more','_blank')">💬 Chat on WhatsApp</button>
+    <button class="btn-ghost" onclick="document.getElementById('methodology').scrollIntoView({behavior:'smooth'})">See the Science</button>
+  </div>
+  <div class="trust-strip">
+    <span class="trust-item">📚 Egerton University Research</span>
+    <span class="trust-item">📊 ILO Cited</span>
+    <span class="trust-item">🔬 Actuarially Priced</span>
+    <span class="trust-item">🛡️ M-PESA Payouts</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item fade-in">
+    <span class="stat-num" data-target="4.5" data-decimal="1">0</span>
+    <div class="stat-label">Million+ Kenyan digital workers underprotected</div>
+  </div>
+  <div class="stat-item fade-in">
+    <span class="stat-num" data-target="73">0</span>
+    <div class="stat-label">% of creators experience income interruption yearly</div>
+  </div>
+  <div class="stat-item fade-in">
+    <span class="stat-num" data-target="2">0</span>
+    <div class="stat-label">Average interruptions per creator per year</div>
+  </div>
+  <div class="stat-item fade-in">
+    <span class="stat-num" data-target="36000">0</span>
+    <div class="stat-label">KSh avg. annual premium starting point</div>
+  </div>
+</div>
+
+<!-- PROBLEM / ABOUT -->
+<section id="about">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">The Problem</span>
+    <h2 class="section-title">Why Content Creators<br/>Fall Through the Cracks</h2>
+    <p class="section-sub">Traditional insurance and social protection laws don't recognize content creators. When income stops, there's no safety net.</p>
+  </div>
+  <div class="problem-grid">
+    <div class="p-card c1 fade-in"><span class="p-icon">⚡</span><h3>Algorithm Changes</h3><p>Platform algorithms can demonetize or reduce reach overnight, wiping out months of income with zero recourse or compensation.</p></div>
+    <div class="p-card c2 fade-in"><span class="p-icon">🏥</span><h3>Illness & Health</h3><p>Unlike salaried employees, content creators receive zero sick pay. A two-week illness can mean zero income and mounting bills.</p></div>
+    <div class="p-card c3 fade-in"><span class="p-icon">🔗</span><h3>Brand Deal Loss</h3><p>Sponsorships and brand partnerships can end abruptly due to company budget cuts, shifting trends, or contract disputes.</p></div>
+    <div class="p-card c4 fade-in"><span class="p-icon">🚫</span><h3>Account Deactivation</h3><p>Platform bans — even temporary ones — eliminate all income instantly with limited appeals processes and no compensation.</p></div>
+    <div class="p-card c5 fade-in"><span class="p-icon">📉</span><h3>Audience Decline</h3><p>Viral content fades. Engagement drops. Income tied to views and subscriptions can halve in weeks without any wrongdoing.</p></div>
+    <div class="p-card c6 fade-in"><span class="p-icon">⚖️</span><h3>No Legal Protection</h3><p>ILO, KIPPRA and Fairwork Kenya confirm: gig workers including content creators are excluded from social protection frameworks.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculator" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="section-wrap">
+  <div class="fade-in" style="margin-bottom:52px;">
+    <span class="section-tag">Premium Calculator</span>
+    <h2 class="section-title">Know Your Premium<br/>in 60 Seconds</h2>
+    <p class="section-sub">Built on Poisson frequency modeling and Lognormal severity distribution for actuarially fair pricing.</p>
+  </div>
+  <div class="calc-wrap fade-in">
+    <div class="calc-grid">
+      <div class="calc-inputs">
+        <div>
+          <div class="input-label">Monthly Income (KSh)</div>
+          <div class="input-row"><input type="range" id="income-slider" min="5000" max="500000" step="5000" value="50000" oninput="updateCalc(this,'income-val',v=>fmtNum(v))"/><span class="range-val" id="income-val">50,000</span></div>
+        </div>
+        <div>
+          <div class="input-label">Interruptions per Year (λ)</div>
+          <div class="input-row"><input type="range" id="freq-slider" min="1" max="12" step="1" value="2" oninput="updateCalc(this,'freq-val',v=>v)"/><span class="range-val" id="freq-val">2</span></div>
+        </div>
+        <div>
+          <div class="input-label">Avg. Interruption Duration (Days)</div>
+          <div class="input-row"><input type="range" id="days-slider" min="3" max="90" step="1" value="15" oninput="updateCalc(this,'days-val',v=>v+' days')"/><span class="range-val" id="days-val">15 days</span></div>
+        </div>
+        <div>
+          <div class="input-label">Income Replacement Ratio (R)</div>
+          <div class="input-row"><input type="range" id="ratio-slider" min="0.3" max="0.9" step="0.05" value="0.6" oninput="updateCalc(this,'ratio-val',v=>Math.round(v*100)+'%')"/><span class="range-val" id="ratio-val">60%</span></div>
+        </div>
+        <div>
+          <div class="input-label">Risk Category</div>
+          <select id="risk-cat" onchange="recalc()">
+            <option value="0.15">Low Risk — Multi-platform, 100K+ followers</option>
+            <option value="0.20" selected>Standard — Single platform, active creator</option>
+            <option value="0.28">Elevated — New creator, &lt;10K followers</option>
+            <option value="0.35">High Risk — Solo platform, past deactivations</option>
+          </select>
+        </div>
+        <div>
+          <div class="input-label">Waiting Period</div>
+          <select id="wait-period" onchange="recalc()">
+            <option value="0.95">3 Days (premium coverage)</option>
+            <option value="1.0" selected>7 Days (standard)</option>
+            <option value="1.08">14 Days (lower premium)</option>
+            <option value="1.18">30 Days (budget coverage)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="calc-result">
+        <div class="big-premium" id="annual-premium">KSh 36,000</div>
+        <div class="big-period">per year</div>
+        <div class="monthly-equiv" id="monthly-equiv">≈ KSh 3,000/month</div>
+        <div class="breakdown-title">Actuarial Breakdown</div>
+        <div class="br-row"><span>Daily income (I/30)</span><span id="br-daily">—</span></div>
+        <div class="br-row"><span>Replacement ratio (R)</span><span id="br-ratio">—</span></div>
+        <div class="br-row"><span>Duration (D days)</span><span id="br-days">—</span></div>
+        <div class="br-row"><span>Expected severity X'</span><span id="br-severity">—</span></div>
+        <div class="br-row"><span>Frequency λ</span><span id="br-freq">—</span></div>
+        <div class="br-row"><span>Expected loss E[L]</span><span id="br-eloss">—</span></div>
+        <div class="br-row"><span>Loading factor θ</span><span id="br-load">—</span></div>
+        <div class="br-row"><span><strong>Annual Premium</strong></span><span id="br-final">—</span></div>
+        <div class="calc-actions">
+          <button class="btn-primary" style="justify-content:center;" onclick="openWaitlistFromCalc()">Get This Quote →</button>
+          <button class="btn-whatsapp" style="justify-content:center;" id="wa-quote-btn" onclick="sendWhatsAppQuote()">💬 Send Quote to WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- METHODOLOGY -->
+<section id="methodology">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">Actuarial Science</span>
+    <h2 class="section-title">The Math Behind<br/>Fair Pricing</h2>
+    <p class="section-sub">Built on peer-reviewed actuarial models adapted for the realities of digital creator income in Kenya.</p>
+  </div>
+  <div class="method-grid fade-in">
+    <div class="method-card">
+      <h3>📊 Claim Frequency Model</h3>
+      <p>Interruptions per year follow a <strong>Poisson distribution</strong> — ideal for counting rare, independent events over time.</p>
+      <div class="formula">P(N=k) = λ<sup>k</sup> · e<sup>-λ</sup> / k!<br/><span class="c">// λ = avg. interruptions/year ≈ 2.0</span></div>
+      <p style="font-size:14px;color:var(--muted);">Survey data from Kenyan creators shows an average of λ = 2.0 interruptions per year, varying by platform and audience size.</p>
+    </div>
+    <div class="method-card">
+      <h3>📈 Claim Severity Model</h3>
+      <p>Monetary loss per interruption follows a <strong>Lognormal distribution</strong> — suited to right-skewed income with a zero lower bound.</p>
+      <div class="formula">X' = I × R × D<br/><span class="c">// I=income, R=ratio, D=days</span><br/>f(x) = 1/(x'σ√2π)·exp[−(lnx'−μ)²/2σ²]</div>
+      <p style="font-size:14px;color:var(--muted);">X' captures the actual monetary loss incorporating both the income replacement ratio and interruption duration.</p>
+    </div>
+    <div class="method-card">
+      <h3>💰 Premium Calculation</h3>
+      <p>Final premium combines expected loss with actuarial loadings for admin, profit margin, and adverse selection risk.</p>
+      <div class="formula">E[L] = λ × E[X']<br/>Premium = E[L] × (1 + θ)<br/><span class="c">// θ = loading factor (15–35%)</span></div>
+      <p style="font-size:14px;color:var(--muted);">Example: 2 interruptions/yr × KSh 15,000 severity × 1.20 loading = <strong>KSh 36,000/yr</strong></p>
+    </div>
+    <div class="method-card">
+      <h3>🛡️ Moral Hazard Controls</h3>
+      <p>Multiple mechanisms prevent fraud and reduce moral hazard, keeping premiums fair for the entire pool.</p>
+      <div class="formula">Waiting period: 7–30 days<br/>Deductible: 10–20% co-pay<br/>Payouts tied to: views + engagement<br/><span class="c">// platform API verification</span></div>
+      <p style="font-size:14px;color:var(--muted);">Claims require platform logs, illness certificates, and engagement data verified through INSUTOK app API integrations.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- PLANS -->
+<section id="plans" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">Coverage Plans</span>
+    <h2 class="section-title">Choose Your<br/>Protection Level</h2>
+    <p class="section-sub">Risk-classified pricing ensures you pay premiums tailored to your actual risk profile.</p>
+  </div>
+  <div class="tiers-grid fade-in">
+    <div class="tier bronze">
+      <div class="tier-tag">Bronze</div>
+      <h3>Starter</h3>
+      <div class="tier-price">From KSh 18,000/yr · KSh 1,500/mo</div>
+      <ul>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>30-day waiting period</li>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>50% income replacement</li>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Up to 30 days per claim</li>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Max 1 claim per year</li>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Illness coverage only</li>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>M-PESA payouts</li>
+        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Basic INSUTOK app</li>
+      </ul>
+      <button class="tier-cta" onclick="openModal('Bronze')">Get Started →</button>
+    </div>
+    <div class="tier gold">
+      <div class="tier-tag">Gold ★</div>
+      <h3>Professional</h3>
+      <div class="tier-price">From KSh 36,000/yr · KSh 3,000/mo</div>
+      <ul>
+        <li><span class="tier-check">✓</span>7-day waiting period</li>
+        <li><span class="tier-check">✓</span>60% income replacement</li>
+        <li><span class="tier-check">✓</span>Up to 60 days per claim</li>
+        <li><span class="tier-check">✓</span>Max 3 claims per year</li>
+        <li><span class="tier-check">✓</span>All disruption types</li>
+        <li><span class="tier-check">✓</span>Full INSUTOK dashboard</li>
+        <li><span class="tier-check">✓</span>Platform API verification</li>
+        <li><span class="tier-check">✓</span>Financial literacy coaching</li>
+        <li><span class="tier-check">✓</span>M-PESA or bank payouts</li>
+        <li><span class="tier-check">✓</span>Priority WhatsApp support</li>
+      </ul>
+      <button class="tier-cta" onclick="openModal('Gold')">Get Started →</button>
+    </div>
+    <div class="tier silver">
+      <div class="tier-tag">Silver</div>
+      <h3>Growth</h3>
+      <div class="tier-price">From KSh 27,000/yr · KSh 2,250/mo</div>
+      <ul>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>14-day waiting period</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>55% income replacement</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Up to 45 days per claim</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Max 2 claims per year</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Illness + brand deal loss</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>INSUTOK app access</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>M-PESA payouts</li>
+        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Claims tracking portal</li>
+      </ul>
+      <button class="tier-cta" onclick="openModal('Silver')">Get Started →</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- APP FEATURES -->
+<section id="app">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">The INSUTOK App</span>
+    <h2 class="section-title">Your Insurance<br/>Command Centre</h2>
+    <p class="section-sub">A digital-first platform that connects your social accounts, monitors income, and streamlines claims.</p>
+  </div>
+  <div class="features-grid fade-in">
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,0.12);">📊</div><h3>Income Dashboard</h3><p>Connect YouTube, TikTok, and Instagram APIs to automatically log daily income, views, and engagement metrics as verifiable claim evidence.</p></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(59,130,246,0.12);">🔔</div><h3>Interruption Alerts</h3><p>Automatic detection of account deactivations, demonetisation events, and unusual income drops — your policy activates instantly via SMS and WhatsApp.</p></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(16,185,129,0.12);">📋</div><h3>One-Tap Claims</h3><p>File a claim in under 60 seconds. Upload illness certificates, attach platform logs, and submit supporting documents from your phone.</p></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(239,68,68,0.12);">🛡️</div><h3>Fraud Prevention</h3><p>Cross-references your claimed interruption against live platform data and engagement trends. Genuine claims are approved faster — within 48 hours.</p></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(139,92,246,0.12);">📚</div><h3>Financial Literacy</h3><p>In-app modules on budgeting, savings strategies, and diversifying income streams — built in partnership with Egerton University financial educators.</p></div>
+    <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,0.12);">📈</div><h3>Risk Score Tracking</h3><p>Monitor your risk score over time. Diversifying platforms and growing audiences actively lowers your premium at renewal — rewarding responsible behaviour.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="process" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">How It Works</span>
+    <h2 class="section-title">Claim in 5 Simple<br/>Steps</h2>
+  </div>
+  <div class="timeline fade-in">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 01</div><h3>Interruption Occurs</h3><p>Your income stops — due to illness, platform action, brand deal cancellation, or other covered event. INSUTOK detects anomalies automatically via API monitoring and sends you a WhatsApp alert.</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 02</div><h3>Waiting Period Begins</h3><p>Your chosen waiting period (7–30 days) starts. This filters minor, self-resolving interruptions and keeps premiums affordable for the entire policyholder pool.</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 03</div><h3>Submit Your Claim</h3><p>Open the INSUTOK app or this website and tap "File Claim." Upload documentation — platform logs, medical certificates, or brand deal correspondence. Takes under 2 minutes.</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 04</div><h3>Automated Verification</h3><p>Our system cross-references your platform data, income history, and submitted documents. Straightforward claims are approved within 48 hours. You receive email and WhatsApp updates throughout.</p></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 05</div><h3>Payment Released</h3><p>Your income replacement payment is disbursed directly to your M-PESA or bank account — up to 60% of average daily income for each covered day, up to your plan limit.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- CLAIM FORM -->
+<section id="claim">
+<div class="section-wrap">
+  <div class="fade-in" style="margin-bottom:52px;">
+    <span class="section-tag">File a Claim</span>
+    <h2 class="section-title">Report an Income<br/>Interruption</h2>
+    <p class="section-sub">Complete the form below. Our team reviews claims within 48 hours and will contact you by email and WhatsApp.</p>
+  </div>
+  <div class="claim-form-wrap fade-in">
+    <div id="claim-success" style="display:none;text-align:center;padding:40px;">
+      <div style="font-size:64px;margin-bottom:16px;">✅</div>
+      <h3 style="font-family:'Syne',sans-serif;font-size:24px;margin-bottom:12px;">Claim Submitted!</h3>
+      <p style="color:var(--muted);">Reference <strong id="claim-ref" style="color:var(--accent);">—</strong><br/>We'll review within 48 hours and contact you by email and WhatsApp.</p>
+      <button class="btn-primary" style="margin-top:28px;" onclick="resetClaimForm()">Submit Another</button>
+    </div>
+    <div id="claim-form-body">
+    <div class="form-grid">
+      <div class="form-field"><label>Full Name *</label><input type="text" id="c-name" placeholder="Your full legal name"/></div>
+      <div class="form-field"><label>Email Address *</label><input type="email" id="c-email" placeholder="your@email.com"/></div>
+      <div class="form-field"><label>Phone / M-PESA Number *</label><input type="tel" id="c-phone" placeholder="+254 7XX XXX XXX"/></div>
+      <div class="form-field"><label>Policy Number</label><input type="text" id="c-policy" placeholder="e.g. INS-2025-XXXXX (if existing)"/></div>
+      <div class="form-field"><label>Primary Platform *</label>
+        <select id="c-platform">
+          <option value="">Select platform</option>
+          <option>TikTok</option><option>YouTube</option><option>Instagram</option>
+          <option>Twitter/X</option><option>Multiple Platforms</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Type of Interruption *</label>
+        <select id="c-type">
+          <option value="">Select reason</option>
+          <option>Illness / Medical</option><option>Account Deactivation / Ban</option>
+          <option>Demonetisation</option><option>Brand Deal Cancellation</option>
+          <option>Algorithm-Driven Income Drop</option><option>Platform Technical Outage</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Interruption Start Date *</label><input type="date" id="c-start"/></div>
+      <div class="form-field"><label>Expected / Actual End Date</label><input type="date" id="c-end"/></div>
+      <div class="form-field"><label>Average Monthly Income (KSh) *</label><input type="number" id="c-income" placeholder="e.g. 75000"/></div>
+      <div class="form-field"><label>Coverage Plan</label>
+        <select id="c-plan">
+          <option value="">Select plan</option>
+          <option>Bronze – Starter (KSh 18,000/yr)</option>
+          <option>Silver – Growth (KSh 27,000/yr)</option>
+          <option>Gold – Professional (KSh 36,000/yr)</option>
+        </select>
+      </div>
+      <div class="form-field full"><label>Description of Interruption *</label>
+        <textarea id="c-desc" placeholder="Describe what happened in detail — platform notifications, medical advice received, brand communications, etc."></textarea>
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;padding:18px;font-size:16px;" onclick="submitClaim()">
+      Submit Claim →
+    </button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">Get In Touch</span>
+    <h2 class="section-title">We're Here<br/>to Help</h2>
+  </div>
+  <div class="contact-grid fade-in">
+    <div class="contact-info">
+      <h3>Talk to the INSUTOK team</h3>
+      <p>Whether you're a content creator wanting to learn more, an insurer interested in partnering, or a researcher, we'd love to hear from you. Based at Egerton University, Kenya.</p>
+      <div class="contact-methods">
+        <a class="contact-btn" href="https://wa.me/254700000000?text=Hi%20INSUTOK!" target="_blank">
+          <div class="contact-btn-icon" style="background:rgba(37,211,102,0.12);">💬</div>
+          <div class="contact-btn-text"><strong>WhatsApp</strong><span>Chat with us instantly — usually reply within 1 hour</span></div>
+        </a>
+        <a class="contact-btn" href="mailto:insutok@egerton.ac.ke">
+          <div class="contact-btn-icon" style="background:rgba(59,130,246,0.12);">✉️</div>
+          <div class="contact-btn-text"><strong>Email</strong><span>insutok@egerton.ac.ke · We respond within 24hrs</span></div>
+        </a>
+        <a class="contact-btn" href="tel:+254700000000">
+          <div class="contact-btn-icon" style="background:rgba(245,158,11,0.12);">📞</div>
+          <div class="contact-btn-text"><strong>Call Us</strong><span>+254 700 000 000 · Mon–Fri, 8am–6pm EAT</span></div>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="claim-form-wrap" style="padding:40px;">
+        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:24px;">Send Us a Message</h3>
+        <div id="contact-success" style="display:none;text-align:center;padding:24px;">
+          <div style="font-size:48px;margin-bottom:12px;">✅</div>
+          <p>Message sent! We'll reply within 24 hours.</p>
+        </div>
+        <div id="contact-form-body">
+          <div class="form-field" style="margin-bottom:16px;"><label>Name</label><input type="text" id="ct-name" placeholder="Your name"/></div>
+          <div class="form-field" style="margin-bottom:16px;"><label>Email</label><input type="email" id="ct-email" placeholder="your@email.com"/></div>
+          <div class="form-field" style="margin-bottom:16px;"><label>Subject</label>
+            <select id="ct-subject">
+              <option>General Inquiry</option>
+              <option>Partnership / Investment</option>
+              <option>Press / Media</option>
+              <option>Research Collaboration</option>
+              <option>Technical Support</option>
+            </select>
+          </div>
+          <div class="form-field" style="margin-bottom:24px;"><label>Message</label><textarea id="ct-msg" placeholder="How can we help you?" style="min-height:100px;"></textarea></div>
+          <button class="btn-primary" style="width:100%;justify-content:center;" onclick="sendContact()">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+<div class="section-wrap">
+  <div class="fade-in">
+    <span class="section-tag">FAQ</span>
+    <h2 class="section-title">Common Questions<br/>Answered</h2>
+  </div>
+  <div class="faq-list fade-in" id="faq-list"></div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="logo">INSU<span>TOK</span></div>
+    <p>Income interruption insurance for Kenya's digital content creators. An Egerton University research project.</p>
+  </div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#calculator">Calculator</a>
+    <a href="#plans">Plans</a>
+    <a href="#claim">File Claim</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="footer-right">
+    <p>Presented by Margret Mbula & Daisy Mutulia<br/>Egerton University · November 2025<br/>References: ILO (2024), Fairwork Kenya (2021),<br/>KIPPRA (2025), MDPI (2023)</p>
+    <div class="footer-social">
+      <a class="social-btn" href="https://wa.me/254700000000" target="_blank" title="WhatsApp">💬</a>
+      <a class="social-btn" href="mailto:insutok@egerton.ac.ke" title="Email">✉️</a>
+      <a class="social-btn" href="https://tiktok.com" target="_blank" title="TikTok">🎵</a>
+    </div>
+  </div>
+</footer>
+
+<!-- WAITLIST MODAL -->
+<div class="modal-overlay" id="modal" onclick="e=>e.target===this&&closeModal()">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-success" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+      <h2 style="font-family:'Syne',sans-serif;margin-bottom:12px;">You're on the list!</h2>
+      <p style="color:var(--muted);">We'll notify you by email and WhatsApp when INSUTOK launches. Thank you for your interest!</p>
+      <button class="btn-primary" style="margin-top:24px;" onclick="closeModal()">Close</button>
+    </div>
+    <div id="modal-form">
+      <h2>Join the Waitlist</h2>
+      <p>Be first to know when INSUTOK launches. We'll send updates via email and WhatsApp.</p>
+      <div class="modal-field"><label>Full Name</label><input type="text" id="wl-name" placeholder="Your name"/></div>
+      <div class="modal-field"><label>Email Address</label><input type="email" id="wl-email" placeholder="your@email.com"/></div>
+      <div class="modal-field"><label>WhatsApp Number</label><input type="tel" id="wl-phone" placeholder="+254 7XX XXX XXX"/></div>
+      <div class="modal-field"><label>Primary Platform</label>
+        <select id="wl-platform">
+          <option value="">Select your main platform</option>
+          <option>TikTok</option><option>YouTube</option><option>Instagram</option>
+          <option>Twitter/X</option><option>Multiple</option>
+        </select>
+      </div>
+      <div class="modal-field"><label>Preferred Plan</label>
+        <select id="wl-plan">
+          <option value="">Select plan</option>
+          <option>Bronze – Starter (KSh 18,000/yr)</option>
+          <option>Silver – Growth (KSh 27,000/yr)</option>
+          <option>Gold – Professional (KSh 36,000/yr)</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="submitWaitlist()">Join Waitlist →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <p class="toast-msg" id="toast-msg">Success!</p>
+</div>
+
+<script>
+// ─── EMAILJS INIT ───
+// Replace with your actual EmailJS public key
+(function(){emailjs.init({publicKey:"YOUR_EMAILJS_PUBLIC_KEY"});})();
+
+const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
+const EMAILJS_WAITLIST_TEMPLATE = "YOUR_WAITLIST_TEMPLATE_ID";
+const EMAILJS_CLAIM_TEMPLATE = "YOUR_CLAIM_TEMPLATE_ID";
+const EMAILJS_CONTACT_TEMPLATE = "YOUR_CONTACT_TEMPLATE_ID";
+const WHATSAPP_NUMBER = "254700000000"; // Replace with real number
+
+// ─── TOAST ───
+let toastTimeout;
+function toast(msg, icon='✅', duration=4500){
+  clearTimeout(toastTimeout);
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-msg').textContent = msg;
+  const el = document.getElementById('toast');
+  el.classList.add('show');
+  toastTimeout = setTimeout(()=>el.classList.remove('show'), duration);
+}
+
+// ─── NUMBERS ───
+function fmtNum(n){return Math.round(n).toLocaleString('en-KE');}
+
+// ─── RANGE SLIDERS ───
+function updateCalc(el, valId, fmt){
+  const min = +el.min, max = +el.max, val = +el.value;
+  const pct = ((val - min)/(max - min)*100).toFixed(1)+'%';
+  el.style.setProperty('--pct', pct);
+  document.getElementById(valId).textContent = fmt(val);
+  recalc();
+}
+
+function recalc(){
+  const income = +document.getElementById('income-slider').value;
+  const freq   = +document.getElementById('freq-slider').value;
+  const days   = +document.getElementById('days-slider').value;
+  const ratio  = +document.getElementById('ratio-slider').value;
+  const load   = +document.getElementById('risk-cat').value;
+  const waitAdj= +document.getElementById('wait-period').value;
+
+  const daily    = income/30;
+  const severity = daily * ratio * days;
+  const eLoss    = freq * severity;
+  const premium  = eLoss * (1 + load) * waitAdj;
+  const monthly  = premium / 12;
+
+  document.getElementById('annual-premium').textContent = 'KSh ' + fmtNum(premium);
+  document.getElementById('monthly-equiv').textContent  = '≈ KSh ' + fmtNum(monthly) + '/month';
+  document.getElementById('br-daily').textContent    = 'KSh ' + fmtNum(daily) + '/day';
+  document.getElementById('br-ratio').textContent    = Math.round(ratio*100) + '%';
+  document.getElementById('br-days').textContent     = days + ' days';
+  document.getElementById('br-severity').textContent = 'KSh ' + fmtNum(severity);
+  document.getElementById('br-freq').textContent     = freq + '/year';
+  document.getElementById('br-eloss').textContent    = 'KSh ' + fmtNum(eLoss);
+  document.getElementById('br-load').textContent     = Math.round(load*100) + '%';
+  document.getElementById('br-final').textContent    = 'KSh ' + fmtNum(premium) + '/yr';
+}
+recalc();
+
+// ─── WHATSAPP QUOTE ───
+function sendWhatsAppQuote(){
+  const income  = document.getElementById('income-slider').value;
+  const freq    = document.getElementById('freq-slider').value;
+  const days    = document.getElementById('days-slider').value;
+  const ratio   = document.getElementById('ratio-slider').value;
+  const premium = document.getElementById('annual-premium').textContent;
+  const msg = encodeURIComponent(
+    `Hi INSUTOK! 👋\n\nI just used your premium calculator and got this quote:\n\n💰 Monthly Income: KSh ${fmtNum(+income)}\n📊 Interruptions/yr: ${freq}\n📅 Avg Duration: ${days} days\n🔄 Replacement Ratio: ${Math.round(ratio*100)}%\n\n✅ *Estimated Annual Premium: ${premium}*\n\nI'd like to know more about signing up!`
+  );
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+}
+
+// ─── MODAL ───
+let selectedPlan = '';
+function openModal(plan=''){
+  selectedPlan = plan;
+  if(plan && document.getElementById('wl-plan')){
+    const sel = document.getElementById('wl-plan');
+    for(let i=0;i<sel.options.length;i++){
+      if(sel.options[i].text.startsWith(plan)){sel.selectedIndex=i;break;}
+    }
+  }
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-form').style.display='';
+  document.getElementById('modal-success').style.display='none';
+}
+function openWaitlistFromCalc(){
+  const premium = document.getElementById('annual-premium').textContent;
+  openModal();
+  toast(`Quote loaded: ${premium} — Complete the form to save it!`, '📋', 5000);
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
+
+// ─── WAITLIST SUBMIT ───
+async function submitWaitlist(){
+  const name     = document.getElementById('wl-name').value.trim();
+  const email    = document.getElementById('wl-email').value.trim();
+  const phone    = document.getElementById('wl-phone').value.trim();
+  const platform = document.getElementById('wl-platform').value;
+  const plan     = document.getElementById('wl-plan').value;
+
+  if(!name||!email){toast('Please fill in name and email.','⚠️');return;}
+
+  try{
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_WAITLIST_TEMPLATE, {
+      to_name: name, to_email: email, phone, platform, plan,
+      reply_to: email,
+      message: `New waitlist signup!\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nPlatform: ${platform}\nPlan: ${plan}`
+    });
+    document.getElementById('modal-form').style.display='none';
+    document.getElementById('modal-success').style.display='';
+    // Open WhatsApp to send confirmation
+    const waMsg = encodeURIComponent(`Hi ${name}! 🎉 You've successfully joined the INSUTOK waitlist! We'll notify you when we launch. Selected plan: ${plan||'Not decided yet'}. Questions? Just reply here!`);
+    if(phone) setTimeout(()=>window.open(`https://wa.me/${phone.replace(/\D/g,'')}?text=${waMsg}`, '_blank'), 1500);
+  }catch(err){
+    // Fallback if EmailJS not configured
+    document.getElementById('modal-form').style.display='none';
+    document.getElementById('modal-success').style.display='';
+    toast('You\'re on the waitlist! (Email service setup needed for confirmation emails)', '🎉', 6000);
+  }
+}
+
+// ─── CLAIM SUBMIT ───
+async function submitClaim(){
+  const name    = document.getElementById('c-name').value.trim();
+  const email   = document.getElementById('c-email').value.trim();
+  const phone   = document.getElementById('c-phone').value.trim();
+  const platform= document.getElementById('c-platform').value;
+  const type    = document.getElementById('c-type').value;
+  const start   = document.getElementById('c-start').value;
+  const income  = document.getElementById('c-income').value;
+  const desc    = document.getElementById('c-desc').value.trim();
+
+  if(!name||!email||!phone||!platform||!type||!start||!desc){
+    toast('Please fill all required fields.','⚠️'); return;
+  }
+
+  const ref = 'INS-' + Date.now().toString().slice(-7);
+
+  try{
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CLAIM_TEMPLATE, {
+      to_email: email, to_name: name, ref, phone, platform,
+      type, start, income,
+      end: document.getElementById('c-end').value,
+      plan: document.getElementById('c-plan').value,
+      desc, reply_to: email
+    });
+  }catch(e){}
+
+  document.getElementById('claim-form-body').style.display='none';
+  document.getElementById('claim-ref').textContent = ref;
+  document.getElementById('claim-success').style.display='';
+
+  // WhatsApp confirmation
+  const waMsg = encodeURIComponent(`Hi ${name}! ✅ Your INSUTOK claim has been received.\n\n📋 Reference: *${ref}*\nType: ${type}\nPlatform: ${platform}\n\nWe'll review within 48 hours and update you here. Stay tuned!`);
+  setTimeout(()=>window.open(`https://wa.me/${phone.replace(/\D/g,'')}?text=${waMsg}`, '_blank'), 800);
+}
+
+function resetClaimForm(){
+  document.getElementById('claim-form-body').style.display='';
+  document.getElementById('claim-success').style.display='none';
+  document.querySelectorAll('#claim-form-body input,#claim-form-body select,#claim-form-body textarea').forEach(el=>el.value='');
+}
+
+// ─── CONTACT SUBMIT ───
+async function sendContact(){
+  const name = document.getElementById('ct-name').value.trim();
+  const email= document.getElementById('ct-email').value.trim();
+  const subj = document.getElementById('ct-subject').value;
+  const msg  = document.getElementById('ct-msg').value.trim();
+
+  if(!name||!email||!msg){toast('Please fill all fields.','⚠️');return;}
+
+  try{
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CONTACT_TEMPLATE, {
+      from_name: name, from_email: email, subject: subj, message: msg, reply_to: email
+    });
+  }catch(e){}
+
+  document.getElementById('contact-form-body').style.display='none';
+  document.getElementById('contact-success').style.display='';
+  toast('Message sent! We\'ll reply within 24 hours.','✅');
+}
+
+// ─── FAQ ───
+const faqs = [
+  {q:"Who is INSUTOK designed for?",a:"INSUTOK is built for content creators in Kenya who earn income primarily through digital platforms such as TikTok, YouTube, Instagram, Twitter/X, and similar platforms. Whether you're a full-time creator or earn a significant portion of your income digitally, INSUTOK is for you."},
+  {q:"What types of income interruptions are covered?",a:"Covered events include illness or medical conditions preventing you from creating content, account deactivation or bans (even temporary), demonetisation events, brand deal cancellations, algorithm-driven significant income drops, and platform technical outages. Coverage varies by plan — Gold covers all disruption types."},
+  {q:"How is my premium calculated?",a:"Your premium is calculated using an actuarial model combining Poisson distribution (for claim frequency) and Lognormal distribution (for claim severity). Key inputs are your monthly income, expected interruption frequency, average interruption duration, income replacement ratio, risk category, and waiting period. Use our calculator above for an instant estimate."},
+  {q:"How and when are claims paid out?",a:"Once a claim is verified and approved (typically within 48 hours for straightforward claims), payments are disbursed directly to your M-PESA or bank account. You receive updates via email and WhatsApp throughout the process. Gold plan members receive priority processing."},
+  {q:"What is a waiting period and why does it exist?",a:"A waiting period is the number of days after an interruption begins before the insurance coverage kicks in. We offer 3, 7, 14, or 30-day waiting periods. Longer waiting periods result in lower premiums — they filter out short, self-resolving interruptions and help keep the product affordable for everyone in the pool."},
+  {q:"How does INSUTOK prevent fraud and moral hazard?",a:"The INSUTOK app integrates with platform APIs to verify claims against real engagement data. We require supporting documentation (platform logs, medical certificates, brand communications). Payouts are tied to verifiable performance metrics. Deductibles and waiting periods also reduce incentives for minor or exaggerated claims."},
+  {q:"Is this product currently available to purchase?",a:"INSUTOK is currently in research and development phase as part of an Egerton University project. Join the waitlist to be among the first notified when we launch or partner with an insurance underwriter. We are actively seeking insurance company partners and regulatory guidance."},
+  {q:"Who are the researchers behind INSUTOK?",a:"INSUTOK was developed by Margret Mbula and Daisy Mutulia from Egerton University as an actuarial research project examining income protection for Kenya's growing digital creator economy. The work draws on ILO, Fairwork Kenya, KIPPRA, and MDPI research."},
+];
+
+const faqList = document.getElementById('faq-list');
+faqs.forEach((f,i)=>{
+  const item = document.createElement('div');
+  item.className = 'faq-item';
+  item.innerHTML = `
+    <button class="faq-q" onclick="toggleFaq(${i})">
+      <span>${f.q}</span>
+      <span class="faq-chevron">⌄</span>
+    </button>
+    <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
+  `;
+  faqList.appendChild(item);
+});
+
+function toggleFaq(i){
+  const items = document.querySelectorAll('.faq-item');
+  items[i].classList.toggle('open');
+}
+
+// ─── SCROLL ANIMATIONS ───
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // Counter animation
+      const nums = e.target.querySelectorAll('[data-target]');
+      nums.forEach(n=>animCount(n));
+    }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// Also observe stat nums directly
+document.querySelectorAll('[data-target]').forEach(el=>{
+  const itemObs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting)animCount(e.target)});
+  },{threshold:0.5});
+  itemObs.observe(el);
+});
+
+function animCount(el){
+  const target = +el.dataset.target;
+  const isDecimal = el.dataset.decimal === '1';
+  let current = 0;
+  const steps = 60;
+  const inc = target / steps;
+  const interval = setInterval(()=>{
+    current = Math.min(current + inc, target);
+    el.textContent = isDecimal ? current.toFixed(1) : Math.round(current).toLocaleString('en-KE');
+    if(current >= target) clearInterval(interval);
+  }, 1600/steps);
+}
+
+// ─── RANGE SLIDER INIT ───
+document.querySelectorAll('input[type=range]').forEach(el=>{
+  const min=+el.min,max=+el.max,val=+el.value;
+  el.style.setProperty('--pct',((val-min)/(max-min)*100).toFixed(1)+'%');
+});
+
+// ─── NAV SCROLL EFFECT ───
+window.addEventListener('scroll',()=>{
+  const nav = document.getElementById('navbar');
+  nav.style.background = window.scrollY>40 ? 'rgba(10,12,16,0.96)' : 'rgba(10,12,16,0.88)';
+});
+</script>
+</body>
+</html>
