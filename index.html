@@ -138,11 +138,9 @@ nav{
 }
 .btn-whatsapp:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 16px 40px rgba(37,211,102,0.3);}
 
-/* trust badges */
 .trust-strip{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:center;opacity:0.55;}
 .trust-item{font-size:12px;letter-spacing:0.06em;text-transform:uppercase;font-weight:500;}
 
-/* grid bg */
 .hero::before{
   content:'';position:absolute;inset:0;
   background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.035) 1px, transparent 0);
@@ -155,25 +153,7 @@ nav{
 }
 @keyframes glowPulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
-/* ── STATS ── */
-.stats-strip{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  background:var(--surface);
-}
-.stat-item{
-  padding:44px 32px;text-align:center;border-right:1px solid var(--border);
-  transition:background var(--t);
-}
-.stat-item:last-child{border-right:none;}
-.stat-item:hover{background:var(--surface2);}
-.stat-num{
-  font-family:'Syne',sans-serif;font-size:52px;font-weight:800;
-  letter-spacing:-2px;display:block;color:var(--accent);line-height:1;
-}
-.stat-label{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.4;}
-
-/* ── SECTION STRUCTURE ── */
+/* ── COMMON SECTIONS ── */
 .section-wrap{padding:110px 48px;max-width:1240px;margin:0 auto;}
 .section-tag{
   display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.12em;
@@ -221,6 +201,13 @@ nav{
 }
 
 /* ── COMPONENTS ── */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);}
+.stat-item{padding:44px 32px;text-align:center;border-right:1px solid var(--border);transition:background var(--t);}
+.stat-item:last-child{border-right:none;}
+.stat-item:hover{background:var(--surface2);}
+.stat-num{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;letter-spacing:-2px;display:block;color:var(--accent);line-height:1;}
+.stat-label{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.4;}
+
 .problem-grid,.features-grid,.tiers-grid,.method-grid{display:grid;gap:22px;margin-top:64px;}
 .problem-grid,.features-grid,.tiers-grid{grid-template-columns:repeat(3,1fr);}
 .method-grid{grid-template-columns:1fr 1fr;}
@@ -380,17 +367,13 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 .fade-in{opacity:0;transform:translateY(28px);transition:opacity 0.65s,transform 0.65s;}
 .fade-in.visible{opacity:1;transform:translateY(0);}
 
-/* ── CORRECTED PDF REPORT TEMPLATE ── */
+/* ── PDF REPORT TEMPLATE ── */
 #pdf-report-container {
-  display: none; /* Keep it hidden during normal use */
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1000;
+  display: none; /* Hidden during regular browsing */
   background: #ffffff;
   color: #1a1a1a;
   padding: 35px 45px;
-  width: 760px; /* Optimal width for A4 portrait without wrapping */
+  width: 760px; /* Perfect A4 scaling width */
   font-family: 'DM Sans', sans-serif;
   box-sizing: border-box;
 }
@@ -988,60 +971,60 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
   <p class="toast-msg" id="toast-msg">Success!</p>
 </div>
 
-<div id="pdf-report-container">
-  <div class="pdf-header">
+<div id="pdf-report-container" style="display: none; background: #ffffff; color: #1a1a1a; padding: 35px 45px; width: 760px; font-family: 'DM Sans', sans-serif; box-sizing: border-box;">
+  <div style="border-bottom: 3px solid #f59e0b; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
     <div>
-      <h1>INSUTOK</h1>
+      <h1 style="font-family: 'Syne', sans-serif; color: #f59e0b; margin: 0; font-size: 38px; line-height: 1;">INSUTOK</h1>
       <p style="color:#666; margin:5px 0 0 0; font-size:16px;">Income-Interruption Risk Profile & Actuarial Breakdown</p>
     </div>
-    <div class="pdf-meta">
+    <div style="text-align: right; font-size: 12px; color: #666;">
       <strong>Date Generated:</strong> <span id="rep-date"></span><br>
       <strong>Reference ID:</strong> <span id="rep-ref"></span>
     </div>
   </div>
 
-  <h2>1. Creator Risk Profile (Inputs)</h2>
-  <div class="pdf-grid">
-    <div class="pdf-box">
-      <div class="pdf-row"><span>Monthly Income:</span> <strong id="rep-income"></strong></div>
-      <div class="pdf-row"><span>Interruptions / Year (λ):</span> <strong id="rep-freq"></strong></div>
-      <div class="pdf-row"><span>Avg. Duration:</span> <strong id="rep-days"></strong></div>
+  <h2 style="font-family: 'Syne', sans-serif; color: #111; font-size: 18px; margin-top: 30px; margin-bottom: 15px; background: #f8fafc; padding: 8px 12px; border-left: 4px solid #f59e0b; border-radius: 4px;">1. Creator Risk Profile (Inputs)</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #e2e8f0;"><span style="color: #555;">Monthly Income:</span> <strong id="rep-income" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #e2e8f0;"><span style="color: #555;">Interruptions / Year (λ):</span> <strong id="rep-freq" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0;"><span style="color: #555;">Avg. Duration:</span> <strong id="rep-days" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
     </div>
-    <div class="pdf-box">
-      <div class="pdf-row"><span>Replacement Ratio (R):</span> <strong id="rep-ratio"></strong></div>
-      <div class="pdf-row"><span>Risk Loading Factor (θ):</span> <strong id="rep-load"></strong></div>
-      <div class="pdf-row"><span>Waiting Period Adj:</span> <strong id="rep-wait"></strong></div>
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #e2e8f0;"><span style="color: #555;">Replacement Ratio (R):</span> <strong id="rep-ratio" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #e2e8f0;"><span style="color: #555;">Risk Loading Factor (θ):</span> <strong id="rep-load" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0;"><span style="color: #555;">Waiting Period Adj:</span> <strong id="rep-wait" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
     </div>
   </div>
 
-  <h2>2. Actuarial Breakdown (Outputs)</h2>
-  <div class="pdf-grid" style="grid-template-columns: 1fr;">
-    <div class="pdf-box" style="background:#fffbeb; border-color:#fcd34d;">
-      <div class="pdf-row"><span>Daily Income (I/30):</span> <strong id="rep-out-daily"></strong></div>
-      <div class="pdf-row"><span>Expected Severity (X'):</span> <strong id="rep-out-sev"></strong></div>
-      <div class="pdf-row"><span>Expected Loss (E[L]):</span> <strong id="rep-out-eloss"></strong></div>
-      <div class="pdf-row" style="margin-top:10px; border-top:1px dashed #fcd34d; padding-top:12px;">
+  <h2 style="font-family: 'Syne', sans-serif; color: #111; font-size: 18px; margin-top: 30px; margin-bottom: 15px; background: #f8fafc; padding: 8px 12px; border-left: 4px solid #f59e0b; border-radius: 4px;">2. Actuarial Breakdown (Outputs)</h2>
+  <div style="display: grid; grid-template-columns: 1fr;">
+    <div style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #fcd34d;"><span style="color: #555;">Daily Income (I/30):</span> <strong id="rep-out-daily" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #fcd34d;"><span style="color: #555;">Expected Severity (X'):</span> <strong id="rep-out-sev" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #fcd34d;"><span style="color: #555;">Expected Loss (E[L]):</span> <strong id="rep-out-eloss" style="color: #000; font-weight: 600; text-align: right;"></strong></div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px; border-top: 1px dashed #fcd34d; padding-top: 12px;">
         <span style="color:#b45309; font-weight:bold; font-size:15px;">Calculated Annual Premium:</span> 
-        <strong id="rep-out-premium" style="color:#d97706; font-size:18px;"></strong>
+        <strong id="rep-out-premium" style="color:#d97706; font-size:18px; text-align: right;"></strong>
       </div>
     </div>
   </div>
 
-  <h2>3. Mathematical Risk Models</h2>
-  <p style="margin-bottom:10px; font-size:13px;">The following models utilize a Poisson distribution for claim frequency and a Lognormal distribution for claim severity, calibrated for the Kenyan gig economy based on Egerton University research.</p>
+  <h2 style="font-family: 'Syne', sans-serif; color: #111; font-size: 18px; margin-top: 30px; margin-bottom: 15px; background: #f8fafc; padding: 8px 12px; border-left: 4px solid #f59e0b; border-radius: 4px;">3. Mathematical Risk Models</h2>
+  <p style="margin-bottom:10px; font-size:13px; color: #555;">The following models utilize a Poisson distribution for claim frequency and a Lognormal distribution for claim severity, calibrated for the Kenyan gig economy based on Egerton University research.</p>
   
-  <div class="pdf-grid">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
     <div>
       <h4 style="margin-top:10px; margin-bottom:5px; color:#333; font-size:14px;">Frequency Risk (Poisson PMF)</h4>
-      <img id="rep-img-poisson" class="pdf-chart-img" />
+      <img id="rep-img-poisson" style="width: 100%; max-height: 240px; object-fit: contain; margin-top: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;" />
     </div>
     <div>
       <h4 style="margin-top:10px; margin-bottom:5px; color:#333; font-size:14px;">Financial Severity (Lognormal PDF)</h4>
-      <img id="rep-img-lognormal" class="pdf-chart-img" />
+      <img id="rep-img-lognormal" style="width: 100%; max-height: 240px; object-fit: contain; margin-top: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px;" />
     </div>
   </div>
 
-  <div class="pdf-footer">
+  <div style="margin-top: 40px; font-size: 11px; color: #888; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;">
     This report is algorithmically generated based on user inputs via the INSUTOK calculator. <br>
     Methodology References: ILO (2024), Fairwork Kenya (2021), KIPPRA (2025). 
   </div>
@@ -1280,81 +1263,92 @@ function recalc(){
 recalc();
 updateCharts(); 
 
-// ─── DOWNLOAD PDF REPORT LOGIC ───
+// ─── DOWNLOAD PDF REPORT LOGIC (BULLETPROOF FIX) ───
 function downloadReport() {
   toast('Compiling your report...', '⏳', 3000);
   
-  // Ensure charts are fully rendered
+  // 1. Force the UI to show the charts so they render properly
+  if (!document.getElementById('tab-analytics').classList.contains('active')) {
+    switchTab(null, 'tab-analytics');
+  }
   updateCharts();
 
-  // Populate metadata
-  const d = new Date();
-  document.getElementById('rep-date').textContent = d.toLocaleDateString('en-KE') + ' ' + d.toLocaleTimeString('en-KE');
-  document.getElementById('rep-ref').textContent = 'REQ-' + Date.now().toString().slice(-6);
-
-  // Populate Inputs
-  document.getElementById('rep-income').textContent = document.getElementById('income-val').textContent;
-  document.getElementById('rep-freq').textContent = document.getElementById('freq-val').textContent;
-  document.getElementById('rep-days').textContent = document.getElementById('days-val').textContent;
-  document.getElementById('rep-ratio').textContent = document.getElementById('ratio-val').textContent;
-  
-  const riskSelect = document.getElementById('risk-cat');
-  document.getElementById('rep-load').textContent = riskSelect.options[riskSelect.selectedIndex].text;
-  
-  const waitSelect = document.getElementById('wait-period');
-  document.getElementById('rep-wait').textContent = waitSelect.options[waitSelect.selectedIndex].text;
-
-  // Populate Outputs
-  document.getElementById('rep-out-daily').textContent = document.getElementById('br-daily').textContent;
-  document.getElementById('rep-out-sev').textContent = document.getElementById('br-severity').textContent;
-  document.getElementById('rep-out-eloss').textContent = document.getElementById('br-eloss').textContent;
-  document.getElementById('rep-out-premium').textContent = document.getElementById('annual-premium').textContent;
-
-  // Grab chart canvases
-  const pChart = document.getElementById('poissonChart');
-  const lChart = document.getElementById('lognormalChart');
-  
-  // Briefly update plugins to render white background for the PDF export
-  poissonChartInstance.options.plugins.customCanvasBackgroundColor.color = '#ffffff';
-  Chart.defaults.color = '#333'; 
-  poissonChartInstance.update();
-  
-  lognormalChartInstance.options.plugins.customCanvasBackgroundColor.color = '#ffffff';
-  lognormalChartInstance.update();
-
+  // Give the browser 600ms to render the new chart sizes perfectly
   setTimeout(() => {
-    // Capture to Base64
+    // Populate the template data
+    const d = new Date();
+    document.getElementById('rep-date').textContent = d.toLocaleDateString('en-KE') + ' ' + d.toLocaleTimeString('en-KE');
+    document.getElementById('rep-ref').textContent = 'REQ-' + Date.now().toString().slice(-6);
+
+    document.getElementById('rep-income').textContent = document.getElementById('income-val').textContent;
+    document.getElementById('rep-freq').textContent = document.getElementById('freq-val').textContent;
+    document.getElementById('rep-days').textContent = document.getElementById('days-val').textContent;
+    document.getElementById('rep-ratio').textContent = document.getElementById('ratio-val').textContent;
+    
+    const riskSelect = document.getElementById('risk-cat');
+    document.getElementById('rep-load').textContent = riskSelect.options[riskSelect.selectedIndex].text;
+    const waitSelect = document.getElementById('wait-period');
+    document.getElementById('rep-wait').textContent = waitSelect.options[waitSelect.selectedIndex].text;
+
+    document.getElementById('rep-out-daily').textContent = document.getElementById('br-daily').textContent;
+    document.getElementById('rep-out-sev').textContent = document.getElementById('br-severity').textContent;
+    document.getElementById('rep-out-eloss').textContent = document.getElementById('br-eloss').textContent;
+    document.getElementById('rep-out-premium').textContent = document.getElementById('annual-premium').textContent;
+
+    // Change chart backgrounds to white for the image capture, disable animation
+    poissonChartInstance.options.plugins.customCanvasBackgroundColor.color = '#ffffff';
+    Chart.defaults.color = '#333'; 
+    poissonChartInstance.update('none');
+    
+    lognormalChartInstance.options.plugins.customCanvasBackgroundColor.color = '#ffffff';
+    lognormalChartInstance.update('none');
+
+    // Extract the chart canvases as base64 images
+    const pChart = document.getElementById('poissonChart');
+    const lChart = document.getElementById('lognormalChart');
     document.getElementById('rep-img-poisson').src = pChart.toDataURL('image/png', 1.0);
     document.getElementById('rep-img-lognormal').src = lChart.toDataURL('image/png', 1.0);
 
-    // Revert charts to dark theme
+    // Revert the main UI charts back to dark theme
     poissonChartInstance.options.plugins.customCanvasBackgroundColor.color = '#13161e';
     Chart.defaults.color = '#6e7899';
-    poissonChartInstance.update();
+    poissonChartInstance.update('none');
     lognormalChartInstance.options.plugins.customCanvasBackgroundColor.color = '#13161e';
-    lognormalChartInstance.update();
+    lognormalChartInstance.update('none');
 
-    // ── FIX FOR BLANK PAGE / SCROLL OFFSET ──
-    const currentScrollY = window.scrollY; // Save current scroll position
-    window.scrollTo(0, 0); // Force scroll to the top of the window
-
+    // Setup the absolute bulletproof wrapper to prevent "half-page" scrolling bugs
     const element = document.getElementById('pdf-report-container');
-    element.style.display = 'block'; // Make it visible to html2canvas
+    const originalParent = element.parentNode;
+    
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.style.top = '0';
+    wrapper.style.left = '0';
+    wrapper.style.zIndex = '-9999'; // Render completely underneath the actual website
+    
+    // Inject the template into the top-level wrapper
+    wrapper.appendChild(element);
+    document.body.appendChild(wrapper);
+    element.style.display = 'block';
 
     const opt = {
       margin:       0.3,
       filename:     'INSUTOK_Risk_Report.pdf',
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      // scrollY: 0 forces html2canvas to look at the absolute top of the document
+      html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0, windowY: 0 },
       jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
 
+    // Generate PDF and then instantly clean up the DOM
     html2pdf().set(opt).from(element).save().then(() => {
-      element.style.display = 'none'; // Hide again
-      window.scrollTo(0, currentScrollY); // Instantly restore user's scroll position
+      element.style.display = 'none';
+      originalParent.appendChild(element);
+      document.body.removeChild(wrapper);
       toast('Report downloaded successfully!', '✅');
     });
-  }, 350); 
+
+  }, 600); 
 }
 
 // ─── WHATSAPP QUOTE ───
