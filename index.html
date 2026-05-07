@@ -62,9 +62,15 @@ nav{
 .nav-links{display:flex;gap:28px;list-style:none;}
 .nav-links a{
   color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;
-  letter-spacing:0.02em;transition:color var(--t);
+  letter-spacing:0.02em;transition:all var(--t);
+  padding: 22px 0; /* Expanded padding for tab underline */
+  border-bottom: 2px solid transparent;
 }
 .nav-links a:hover{color:var(--text);}
+.nav-links a.active{
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
 .nav-actions{display:flex;gap:10px;align-items:center;}
 .nav-cta{
   background:var(--accent);color:#000;border:none;
@@ -80,6 +86,19 @@ nav{
   transition:all var(--t);text-decoration:none;display:flex;align-items:center;gap:6px;
 }
 .nav-wa:hover{background:#1ebe5d;transform:translateY(-1px);}
+
+/* ── TABS ── */
+.tab-content {
+  display: none;
+  animation: tabFadeIn 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+.tab-content.active {
+  display: block;
+}
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* ── HERO ── */
 .hero{
@@ -178,6 +197,7 @@ nav{
   font-weight:700;letter-spacing:-1.5px;margin-bottom:16px;line-height:1.08;
 }
 .section-sub{font-size:17px;color:var(--muted);max-width:560px;line-height:1.75;}
+.tab-padding-top { padding-top: 100px; } /* To push content down on non-hero tabs */
 
 /* ── CARDS ── */
 .problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:64px;}
@@ -477,9 +497,19 @@ footer{
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
-  nav{padding:0 20px;}
-  .nav-links{display:none;}
-  .nav-wa{display:none;}
+  nav{height: auto; padding: 15px 20px; flex-wrap: wrap; background: rgba(10,12,16,0.96);}
+  .nav-logo { flex: 1; }
+  .nav-actions { display: none; }
+  .nav-links { 
+    display: flex; width: 100%; justify-content: space-between; 
+    margin-top: 15px; border-top: 1px solid var(--border); 
+    padding-top: 5px; gap: 10px; overflow-x: auto;
+  }
+  .nav-links a { padding: 12px 0; font-size: 13px; white-space: nowrap;}
+  
+  .hero { padding-top: 140px; }
+  .tab-padding-top { padding-top: 120px; }
+  
   .stats-strip{grid-template-columns:1fr 1fr;}
   .stat-item{border-right:none;border-bottom:1px solid var(--border);}
   .section-wrap{padding:72px 20px;}
@@ -502,13 +532,11 @@ footer{
 <a class="fab-wa" href="https://wa.me/254795163954?text=Hi%20INSUTOK!%20I%27m%20interested%20in%20income%20interruption%20insurance%20for%20content%20creators." target="_blank" title="Chat on WhatsApp">💬</a>
 
 <nav id="navbar">
-  <a class="nav-logo" href="#">INSU<span>TOK</span></a>
+  <a class="nav-logo" href="#" onclick="switchTab(event, 'tab-overview')">INSU<span>TOK</span></a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#calculator">Calculator</a></li>
-    <li><a href="#plans">Plans</a></li>
-    <li><a href="#claim">File Claim</a></li>
-    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#" class="tab-link active" onclick="switchTab(event, 'tab-overview')">Overview</a></li>
+    <li><a href="#" class="tab-link" onclick="switchTab(event, 'tab-pricing')">Pricing & Math</a></li>
+    <li><a href="#" class="tab-link" onclick="switchTab(event, 'tab-support')">Claims & Support</a></li>
   </ul>
   <div class="nav-actions">
     <a class="nav-wa" href="https://wa.me/254795163954?text=Hi%20INSUTOK!" target="_blank">💬 WhatsApp</a>
@@ -516,382 +544,389 @@ footer{
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-badge"><span class="pulse-dot"></span>🇰🇪 Designed for Kenyan Content Creators</div>
-  <h1>Protect Your<br/><span class="highlight">Digital Income</span></h1>
-  <p class="hero-sub">The first actuarially-priced income interruption insurance built specifically for content creators on TikTok, YouTube, and Instagram. When your income stops, we don't.</p>
-  <div class="hero-btns">
-    <button class="btn-primary" onclick="document.getElementById('calculator').scrollIntoView({behavior:'smooth'})">Calculate My Premium →</button>
-    <button class="btn-whatsapp" onclick="window.open('https://wa.me/254795163954?text=Hi%20INSUTOK!%20I%20want%20to%20learn%20more','_blank')">💬 Chat on WhatsApp</button>
-    <button class="btn-ghost" onclick="document.getElementById('methodology').scrollIntoView({behavior:'smooth'})">See the Science</button>
-  </div>
-  <div class="trust-strip">
-    <span class="trust-item">📚 Egerton University Research</span>
-    <span class="trust-item">📊 ILO Cited</span>
-    <span class="trust-item">🔬 Actuarially Priced</span>
-    <span class="trust-item">🛡️ M-PESA Payouts</span>
-  </div>
-</section>
+<div id="tab-overview" class="tab-content active">
 
-<div class="stats-strip">
-  <div class="stat-item fade-in">
-    <span class="stat-num" data-target="4.5" data-decimal="1">0</span>
-    <div class="stat-label">Million+ Kenyan digital workers underprotected</div>
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-badge"><span class="pulse-dot"></span>🇰🇪 Designed for Kenyan Content Creators</div>
+    <h1>Protect Your<br/><span class="highlight">Digital Income</span></h1>
+    <p class="hero-sub">The first actuarially-priced income interruption insurance built specifically for content creators on TikTok, YouTube, and Instagram. When your income stops, we don't.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="switchTab(event, 'tab-pricing'); setTimeout(()=>document.getElementById('calculator').scrollIntoView({behavior:'smooth'}), 100)">Calculate My Premium →</button>
+      <button class="btn-whatsapp" onclick="window.open('https://wa.me/254795163954?text=Hi%20INSUTOK!%20I%20want%20to%20learn%20more','_blank')">💬 Chat on WhatsApp</button>
+      <button class="btn-ghost" onclick="switchTab(event, 'tab-pricing'); setTimeout(()=>document.getElementById('methodology').scrollIntoView({behavior:'smooth'}), 100)">See the Science</button>
+    </div>
+    <div class="trust-strip">
+      <span class="trust-item">📚 Egerton University Research</span>
+      <span class="trust-item">📊 ILO Cited</span>
+      <span class="trust-item">🔬 Actuarially Priced</span>
+      <span class="trust-item">🛡️ M-PESA Payouts</span>
+    </div>
+  </section>
+
+  <div class="stats-strip">
+    <div class="stat-item fade-in">
+      <span class="stat-num" data-target="4.5" data-decimal="1">0</span>
+      <div class="stat-label">Million+ Kenyan digital workers underprotected</div>
+    </div>
+    <div class="stat-item fade-in">
+      <span class="stat-num" data-target="73">0</span>
+      <div class="stat-label">% of creators experience income interruption yearly</div>
+    </div>
+    <div class="stat-item fade-in">
+      <span class="stat-num" data-target="2">0</span>
+      <div class="stat-label">Average interruptions per creator per year</div>
+    </div>
+    <div class="stat-item fade-in">
+      <span class="stat-num" data-target="36000">0</span>
+      <div class="stat-label">KSh avg. annual premium starting point</div>
+    </div>
   </div>
-  <div class="stat-item fade-in">
-    <span class="stat-num" data-target="73">0</span>
-    <div class="stat-label">% of creators experience income interruption yearly</div>
+
+  <section id="about">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">The Problem</span>
+      <h2 class="section-title">Why Content Creators<br/>Fall Through the Cracks</h2>
+      <p class="section-sub">Traditional insurance and social protection laws don't recognize content creators. When income stops, there's no safety net.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="p-card c1 fade-in"><span class="p-icon">⚡</span><h3>Algorithm Changes</h3><p>Platform algorithms can demonetize or reduce reach overnight, wiping out months of income with zero recourse or compensation.</p></div>
+      <div class="p-card c2 fade-in"><span class="p-icon">🏥</span><h3>Illness & Health</h3><p>Unlike salaried employees, content creators receive zero sick pay. A two-week illness can mean zero income and mounting bills.</p></div>
+      <div class="p-card c3 fade-in"><span class="p-icon">🔗</span><h3>Brand Deal Loss</h3><p>Sponsorships and brand partnerships can end abruptly due to company budget cuts, shifting trends, or contract disputes.</p></div>
+      <div class="p-card c4 fade-in"><span class="p-icon">🚫</span><h3>Account Deactivation</h3><p>Platform bans — even temporary ones — eliminate all income instantly with limited appeals processes and no compensation.</p></div>
+      <div class="p-card c5 fade-in"><span class="p-icon">📉</span><h3>Audience Decline</h3><p>Viral content fades. Engagement drops. Income tied to views and subscriptions can halve in weeks without any wrongdoing.</p></div>
+      <div class="p-card c6 fade-in"><span class="p-icon">⚖️</span><h3>No Legal Protection</h3><p>ILO, KIPPRA and Fairwork Kenya confirm: gig workers including content creators are excluded from social protection frameworks.</p></div>
+    </div>
   </div>
-  <div class="stat-item fade-in">
-    <span class="stat-num" data-target="2">0</span>
-    <div class="stat-label">Average interruptions per creator per year</div>
+  </section>
+
+  <section id="app" style="background:var(--surface);border-top:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">The INSUTOK App</span>
+      <h2 class="section-title">Your Insurance<br/>Command Centre</h2>
+      <p class="section-sub">A digital-first platform that connects your social accounts, monitors income, and streamlines claims.</p>
+    </div>
+    <div class="features-grid fade-in">
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,0.12);">📊</div><h3>Income Dashboard</h3><p>Connect YouTube, TikTok, and Instagram APIs to automatically log daily income, views, and engagement metrics as verifiable claim evidence.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(59,130,246,0.12);">🔔</div><h3>Interruption Alerts</h3><p>Automatic detection of account deactivations, demonetisation events, and unusual income drops — your policy activates instantly via SMS and WhatsApp.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(16,185,129,0.12);">📋</div><h3>One-Tap Claims</h3><p>File a claim in under 60 seconds. Upload illness certificates, attach platform logs, and submit supporting documents from your phone.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(239,68,68,0.12);">🛡️</div><h3>Fraud Prevention</h3><p>Cross-references your claimed interruption against live platform data and engagement trends. Genuine claims are approved faster — within 48 hours.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(139,92,246,0.12);">📚</div><h3>Financial Literacy</h3><p>In-app modules on budgeting, savings strategies, and diversifying income streams — built in partnership with Egerton University financial educators.</p></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,0.12);">📈</div><h3>Risk Score Tracking</h3><p>Monitor your risk score over time. Diversifying platforms and growing audiences actively lowers your premium at renewal — rewarding responsible behaviour.</p></div>
+    </div>
   </div>
-  <div class="stat-item fade-in">
-    <span class="stat-num" data-target="36000">0</span>
-    <div class="stat-label">KSh avg. annual premium starting point</div>
+  </section>
+
+  <section id="process">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">How It Works</span>
+      <h2 class="section-title">Claim in 5 Simple<br/>Steps</h2>
+    </div>
+    <div class="timeline fade-in">
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 01</div><h3>Interruption Occurs</h3><p>Your income stops — due to illness, platform action, brand deal cancellation, or other covered event. INSUTOK detects anomalies automatically via API monitoring and sends you a WhatsApp alert.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 02</div><h3>Waiting Period Begins</h3><p>Your chosen waiting period (7–30 days) starts. This filters minor, self-resolving interruptions and keeps premiums affordable for the entire policyholder pool.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 03</div><h3>Submit Your Claim</h3><p>Open the INSUTOK app or this website and tap "File Claim." Upload documentation — platform logs, medical certificates, or brand deal correspondence. Takes under 2 minutes.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 04</div><h3>Automated Verification</h3><p>Our system cross-references your platform data, income history, and submitted documents. Straightforward claims are approved within 48 hours. You receive email and WhatsApp updates throughout.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 05</div><h3>Payment Released</h3><p>Your income replacement payment is disbursed directly to your M-PESA or bank account — up to 60% of average daily income for each covered day, up to your plan limit.</p></div>
+    </div>
   </div>
+  </section>
 </div>
 
-<section id="about">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">The Problem</span>
-    <h2 class="section-title">Why Content Creators<br/>Fall Through the Cracks</h2>
-    <p class="section-sub">Traditional insurance and social protection laws don't recognize content creators. When income stops, there's no safety net.</p>
-  </div>
-  <div class="problem-grid">
-    <div class="p-card c1 fade-in"><span class="p-icon">⚡</span><h3>Algorithm Changes</h3><p>Platform algorithms can demonetize or reduce reach overnight, wiping out months of income with zero recourse or compensation.</p></div>
-    <div class="p-card c2 fade-in"><span class="p-icon">🏥</span><h3>Illness & Health</h3><p>Unlike salaried employees, content creators receive zero sick pay. A two-week illness can mean zero income and mounting bills.</p></div>
-    <div class="p-card c3 fade-in"><span class="p-icon">🔗</span><h3>Brand Deal Loss</h3><p>Sponsorships and brand partnerships can end abruptly due to company budget cuts, shifting trends, or contract disputes.</p></div>
-    <div class="p-card c4 fade-in"><span class="p-icon">🚫</span><h3>Account Deactivation</h3><p>Platform bans — even temporary ones — eliminate all income instantly with limited appeals processes and no compensation.</p></div>
-    <div class="p-card c5 fade-in"><span class="p-icon">📉</span><h3>Audience Decline</h3><p>Viral content fades. Engagement drops. Income tied to views and subscriptions can halve in weeks without any wrongdoing.</p></div>
-    <div class="p-card c6 fade-in"><span class="p-icon">⚖️</span><h3>No Legal Protection</h3><p>ILO, KIPPRA and Fairwork Kenya confirm: gig workers including content creators are excluded from social protection frameworks.</p></div>
-  </div>
-</div>
-</section>
-
-<section id="calculator" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-<div class="section-wrap">
-  <div class="fade-in" style="margin-bottom:52px;">
-    <span class="section-tag">Premium Calculator</span>
-    <h2 class="section-title">Know Your Premium<br/>in 60 Seconds</h2>
-    <p class="section-sub">Built on Poisson frequency modeling and Lognormal severity distribution for actuarially fair pricing.</p>
-  </div>
-  <div class="calc-wrap fade-in">
-    <div class="calc-grid">
-      <div class="calc-inputs">
-        <div>
-          <div class="input-label">Monthly Income (KSh)</div>
-          <div class="input-row"><input type="range" id="income-slider" min="5000" max="500000" step="5000" value="50000" oninput="updateCalc(this,'income-val',v=>fmtNum(v))"/><span class="range-val" id="income-val">50,000</span></div>
-        </div>
-        <div>
-          <div class="input-label">Interruptions per Year (λ)</div>
-          <div class="input-row"><input type="range" id="freq-slider" min="1" max="12" step="1" value="2" oninput="updateCalc(this,'freq-val',v=>v)"/><span class="range-val" id="freq-val">2</span></div>
-        </div>
-        <div>
-          <div class="input-label">Avg. Interruption Duration (Days)</div>
-          <div class="input-row"><input type="range" id="days-slider" min="3" max="90" step="1" value="15" oninput="updateCalc(this,'days-val',v=>v+' days')"/><span class="range-val" id="days-val">15 days</span></div>
-        </div>
-        <div>
-          <div class="input-label">Income Replacement Ratio (R)</div>
-          <div class="input-row"><input type="range" id="ratio-slider" min="0.3" max="0.9" step="0.05" value="0.6" oninput="updateCalc(this,'ratio-val',v=>Math.round(v*100)+'%')"/><span class="range-val" id="ratio-val">60%</span></div>
-        </div>
-        <div>
-          <div class="input-label">Risk Category</div>
-          <select id="risk-cat" onchange="recalc()">
-            <option value="0.15">Low Risk — Multi-platform, 100K+ followers</option>
-            <option value="0.20" selected>Standard — Single platform, active creator</option>
-            <option value="0.28">Elevated — New creator, &lt;10K followers</option>
-            <option value="0.35">High Risk — Solo platform, past deactivations</option>
-          </select>
-        </div>
-        <div>
-          <div class="input-label">Waiting Period</div>
-          <select id="wait-period" onchange="recalc()">
-            <option value="0.95">3 Days (premium coverage)</option>
-            <option value="1.0" selected>7 Days (standard)</option>
-            <option value="1.08">14 Days (lower premium)</option>
-            <option value="1.18">30 Days (budget coverage)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="calc-result">
-        <div class="big-premium" id="annual-premium">KSh 36,000</div>
-        <div class="big-period">per year</div>
-        <div class="monthly-equiv" id="monthly-equiv">≈ KSh 3,000/month</div>
-        <div class="breakdown-title">Actuarial Breakdown</div>
-        <div class="br-row"><span>Daily income (I/30)</span><span id="br-daily">—</span></div>
-        <div class="br-row"><span>Replacement ratio (R)</span><span id="br-ratio">—</span></div>
-        <div class="br-row"><span>Duration (D days)</span><span id="br-days">—</span></div>
-        <div class="br-row"><span>Expected severity X'</span><span id="br-severity">—</span></div>
-        <div class="br-row"><span>Frequency λ</span><span id="br-freq">—</span></div>
-        <div class="br-row"><span>Expected loss E[L]</span><span id="br-eloss">—</span></div>
-        <div class="br-row"><span>Loading factor θ</span><span id="br-load">—</span></div>
-        <div class="br-row"><span><strong>Annual Premium</strong></span><span id="br-final">—</span></div>
-        <div class="calc-actions">
-          <button class="btn-primary" style="justify-content:center;" onclick="openWaitlistFromCalc()">Get This Quote →</button>
-          <button class="btn-whatsapp" style="justify-content:center;" id="wa-quote-btn" onclick="sendWhatsAppQuote()">💬 Send Quote to WhatsApp</button>
-        </div>
-      </div>
+<div id="tab-pricing" class="tab-content">
+  <div class="tab-padding-top"></div> <section id="calculator">
+  <div class="section-wrap">
+    <div class="fade-in" style="margin-bottom:52px;">
+      <span class="section-tag">Premium Calculator</span>
+      <h2 class="section-title">Know Your Premium<br/>in 60 Seconds</h2>
+      <p class="section-sub">Built on Poisson frequency modeling and Lognormal severity distribution for actuarially fair pricing.</p>
     </div>
-  </div>
-</div>
-</section>
-
-<section id="methodology">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">Actuarial Science</span>
-    <h2 class="section-title">The Math Behind<br/>Fair Pricing</h2>
-    <p class="section-sub">Built on peer-reviewed actuarial models adapted for the realities of digital creator income in Kenya.</p>
-  </div>
-  <div class="method-grid fade-in">
-    <div class="method-card">
-      <h3>📊 Claim Frequency Model</h3>
-      <p>Interruptions per year follow a <strong>Poisson distribution</strong> — ideal for counting rare, independent events over time.</p>
-      <div class="formula">P(N=k) = λ<sup>k</sup> · e<sup>-λ</sup> / k!<br/><span class="c">// λ = avg. interruptions/year ≈ 2.0</span></div>
-      <p style="font-size:14px;color:var(--muted);">Survey data from Kenyan creators shows an average of λ = 2.0 interruptions per year, varying by platform and audience size.</p>
-    </div>
-    <div class="method-card">
-      <h3>📈 Claim Severity Model</h3>
-      <p>Monetary loss per interruption follows a <strong>Lognormal distribution</strong> — suited to right-skewed income with a zero lower bound.</p>
-      <div class="formula">X' = I × R × D<br/><span class="c">// I=income, R=ratio, D=days</span><br/>f(x) = 1/(x'σ√2π)·exp[−(lnx'−μ)²/2σ²]</div>
-      <p style="font-size:14px;color:var(--muted);">X' captures the actual monetary loss incorporating both the income replacement ratio and interruption duration.</p>
-    </div>
-    <div class="method-card">
-      <h3>💰 Premium Calculation</h3>
-      <p>Final premium combines expected loss with actuarial loadings for admin, profit margin, and adverse selection risk.</p>
-      <div class="formula">E[L] = λ × E[X']<br/>Premium = E[L] × (1 + θ)<br/><span class="c">// θ = loading factor (15–35%)</span></div>
-      <p style="font-size:14px;color:var(--muted);">Example: 2 interruptions/yr × KSh 15,000 severity × 1.20 loading = <strong>KSh 36,000/yr</strong></p>
-    </div>
-    <div class="method-card">
-      <h3>🛡️ Moral Hazard Controls</h3>
-      <p>Multiple mechanisms prevent fraud and reduce moral hazard, keeping premiums fair for the entire pool.</p>
-      <div class="formula">Waiting period: 7–30 days<br/>Deductible: 10–20% co-pay<br/>Payouts tied to: views + engagement<br/><span class="c">// platform API verification</span></div>
-      <p style="font-size:14px;color:var(--muted);">Claims require platform logs, illness certificates, and engagement data verified through INSUTOK app API integrations.</p>
-    </div>
-  </div>
-</div>
-</section>
-
-<section id="plans" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">Coverage Plans</span>
-    <h2 class="section-title">Choose Your<br/>Protection Level</h2>
-    <p class="section-sub">Risk-classified pricing ensures you pay premiums tailored to your actual risk profile.</p>
-  </div>
-  <div class="tiers-grid fade-in">
-    <div class="tier bronze">
-      <div class="tier-tag">Bronze</div>
-      <h3>Starter</h3>
-      <div class="tier-price">From KSh 18,000/yr · KSh 1,500/mo</div>
-      <ul>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>30-day waiting period</li>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>50% income replacement</li>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Up to 30 days per claim</li>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Max 1 claim per year</li>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Illness coverage only</li>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>M-PESA payouts</li>
-        <li><span class="tier-check" style="color:#cd7f32;">✓</span>Basic INSUTOK app</li>
-      </ul>
-      <button class="tier-cta" onclick="openModal('Bronze')">Get Started →</button>
-    </div>
-    <div class="tier gold">
-      <div class="tier-tag">Gold ★</div>
-      <h3>Professional</h3>
-      <div class="tier-price">From KSh 36,000/yr · KSh 3,000/mo</div>
-      <ul>
-        <li><span class="tier-check">✓</span>7-day waiting period</li>
-        <li><span class="tier-check">✓</span>60% income replacement</li>
-        <li><span class="tier-check">✓</span>Up to 60 days per claim</li>
-        <li><span class="tier-check">✓</span>Max 3 claims per year</li>
-        <li><span class="tier-check">✓</span>All disruption types</li>
-        <li><span class="tier-check">✓</span>Full INSUTOK dashboard</li>
-        <li><span class="tier-check">✓</span>Platform API verification</li>
-        <li><span class="tier-check">✓</span>Financial literacy coaching</li>
-        <li><span class="tier-check">✓</span>M-PESA or bank payouts</li>
-        <li><span class="tier-check">✓</span>Priority WhatsApp support</li>
-      </ul>
-      <button class="tier-cta" onclick="openModal('Gold')">Get Started →</button>
-    </div>
-    <div class="tier silver">
-      <div class="tier-tag">Silver</div>
-      <h3>Growth</h3>
-      <div class="tier-price">From KSh 27,000/yr · KSh 2,250/mo</div>
-      <ul>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>14-day waiting period</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>55% income replacement</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Up to 45 days per claim</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Max 2 claims per year</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Illness + brand deal loss</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>INSUTOK app access</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>M-PESA payouts</li>
-        <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Claims tracking portal</li>
-      </ul>
-      <button class="tier-cta" onclick="openModal('Silver')">Get Started →</button>
-    </div>
-  </div>
-</div>
-</section>
-
-<section id="app">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">The INSUTOK App</span>
-    <h2 class="section-title">Your Insurance<br/>Command Centre</h2>
-    <p class="section-sub">A digital-first platform that connects your social accounts, monitors income, and streamlines claims.</p>
-  </div>
-  <div class="features-grid fade-in">
-    <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,0.12);">📊</div><h3>Income Dashboard</h3><p>Connect YouTube, TikTok, and Instagram APIs to automatically log daily income, views, and engagement metrics as verifiable claim evidence.</p></div>
-    <div class="feat-card"><div class="feat-icon" style="background:rgba(59,130,246,0.12);">🔔</div><h3>Interruption Alerts</h3><p>Automatic detection of account deactivations, demonetisation events, and unusual income drops — your policy activates instantly via SMS and WhatsApp.</p></div>
-    <div class="feat-card"><div class="feat-icon" style="background:rgba(16,185,129,0.12);">📋</div><h3>One-Tap Claims</h3><p>File a claim in under 60 seconds. Upload illness certificates, attach platform logs, and submit supporting documents from your phone.</p></div>
-    <div class="feat-card"><div class="feat-icon" style="background:rgba(239,68,68,0.12);">🛡️</div><h3>Fraud Prevention</h3><p>Cross-references your claimed interruption against live platform data and engagement trends. Genuine claims are approved faster — within 48 hours.</p></div>
-    <div class="feat-card"><div class="feat-icon" style="background:rgba(139,92,246,0.12);">📚</div><h3>Financial Literacy</h3><p>In-app modules on budgeting, savings strategies, and diversifying income streams — built in partnership with Egerton University financial educators.</p></div>
-    <div class="feat-card"><div class="feat-icon" style="background:rgba(245,158,11,0.12);">📈</div><h3>Risk Score Tracking</h3><p>Monitor your risk score over time. Diversifying platforms and growing audiences actively lowers your premium at renewal — rewarding responsible behaviour.</p></div>
-  </div>
-</div>
-</section>
-
-<section id="process" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">How It Works</span>
-    <h2 class="section-title">Claim in 5 Simple<br/>Steps</h2>
-  </div>
-  <div class="timeline fade-in">
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 01</div><h3>Interruption Occurs</h3><p>Your income stops — due to illness, platform action, brand deal cancellation, or other covered event. INSUTOK detects anomalies automatically via API monitoring and sends you a WhatsApp alert.</p></div>
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 02</div><h3>Waiting Period Begins</h3><p>Your chosen waiting period (7–30 days) starts. This filters minor, self-resolving interruptions and keeps premiums affordable for the entire policyholder pool.</p></div>
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 03</div><h3>Submit Your Claim</h3><p>Open the INSUTOK app or this website and tap "File Claim." Upload documentation — platform logs, medical certificates, or brand deal correspondence. Takes under 2 minutes.</p></div>
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 04</div><h3>Automated Verification</h3><p>Our system cross-references your platform data, income history, and submitted documents. Straightforward claims are approved within 48 hours. You receive email and WhatsApp updates throughout.</p></div>
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-step">Step 05</div><h3>Payment Released</h3><p>Your income replacement payment is disbursed directly to your M-PESA or bank account — up to 60% of average daily income for each covered day, up to your plan limit.</p></div>
-  </div>
-</div>
-</section>
-
-<section id="claim">
-<div class="section-wrap">
-  <div class="fade-in" style="margin-bottom:52px;">
-    <span class="section-tag">File a Claim</span>
-    <h2 class="section-title">Report an Income<br/>Interruption</h2>
-    <p class="section-sub">Complete the form below. Our team reviews claims within 48 hours and will contact you by email and WhatsApp.</p>
-  </div>
-  <div class="claim-form-wrap fade-in">
-    <div id="claim-success" style="display:none;text-align:center;padding:40px;">
-      <div style="font-size:64px;margin-bottom:16px;">✅</div>
-      <h3 style="font-family:'Syne',sans-serif;font-size:24px;margin-bottom:12px;">Claim Submitted!</h3>
-      <p style="color:var(--muted);">Reference <strong id="claim-ref" style="color:var(--accent);">—</strong><br/>We'll review within 48 hours and contact you by email and WhatsApp.</p>
-      <button class="btn-primary" style="margin-top:28px;" onclick="resetClaimForm()">Submit Another</button>
-    </div>
-    <div id="claim-form-body">
-    <div class="form-grid">
-      <div class="form-field"><label>Full Name *</label><input type="text" id="c-name" placeholder="Your full legal name"/></div>
-      <div class="form-field"><label>Email Address *</label><input type="email" id="c-email" placeholder="your@email.com"/></div>
-      <div class="form-field"><label>Phone / M-PESA Number *</label><input type="tel" id="c-phone" placeholder="+254 7XX XXX XXX"/></div>
-      <div class="form-field"><label>Policy Number</label><input type="text" id="c-policy" placeholder="e.g. INS-2025-XXXXX (if existing)"/></div>
-      <div class="form-field"><label>Primary Platform *</label>
-        <select id="c-platform">
-          <option value="">Select platform</option>
-          <option>TikTok</option><option>YouTube</option><option>Instagram</option>
-          <option>Twitter/X</option><option>Multiple Platforms</option>
-        </select>
-      </div>
-      <div class="form-field"><label>Type of Interruption *</label>
-        <select id="c-type">
-          <option value="">Select reason</option>
-          <option>Illness / Medical</option><option>Account Deactivation / Ban</option>
-          <option>Demonetisation</option><option>Brand Deal Cancellation</option>
-          <option>Algorithm-Driven Income Drop</option><option>Platform Technical Outage</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-field"><label>Interruption Start Date *</label><input type="date" id="c-start"/></div>
-      <div class="form-field"><label>Expected / Actual End Date</label><input type="date" id="c-end"/></div>
-      <div class="form-field"><label>Average Monthly Income (KSh) *</label><input type="number" id="c-income" placeholder="e.g. 75000"/></div>
-      <div class="form-field"><label>Coverage Plan</label>
-        <select id="c-plan">
-          <option value="">Select plan</option>
-          <option>Bronze – Starter (KSh 18,000/yr)</option>
-          <option>Silver – Growth (KSh 27,000/yr)</option>
-          <option>Gold – Professional (KSh 36,000/yr)</option>
-        </select>
-      </div>
-      <div class="form-field full"><label>Description of Interruption *</label>
-        <textarea id="c-desc" placeholder="Describe what happened in detail — platform notifications, medical advice received, brand communications, etc."></textarea>
-      </div>
-    </div>
-    <button class="btn-primary" style="width:100%;justify-content:center;padding:18px;font-size:16px;" onclick="submitClaim()">
-      Submit Claim →
-    </button>
-    </div>
-  </div>
-</div>
-</section>
-
-<section id="contact" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">Get In Touch</span>
-    <h2 class="section-title">We're Here<br/>to Help</h2>
-  </div>
-  <div class="contact-grid fade-in">
-    <div class="contact-info">
-      <h3>Talk to the INSUTOK team</h3>
-      <p>Whether you're a content creator wanting to learn more, an insurer interested in partnering, or a researcher, we'd love to hear from you. Based at Egerton University, Kenya.</p>
-      <div class="contact-methods">
-        <a class="contact-btn" href="https://wa.me/254795163954?text=Hi%20INSUTOK!" target="_blank">
-          <div class="contact-btn-icon" style="background:rgba(37,211,102,0.12);">💬</div>
-          <div class="contact-btn-text"><strong>WhatsApp</strong><span>Chat with us instantly — usually reply within 1 hour</span></div>
-        </a>
-        <a class="contact-btn" href="mailto:insutok@egerton.ac.ke">
-          <div class="contact-btn-icon" style="background:rgba(59,130,246,0.12);">✉️</div>
-          <div class="contact-btn-text"><strong>Email</strong><span>insutok@egerton.ac.ke · We respond within 24hrs</span></div>
-        </a>
-        <a class="contact-btn" href="tel:+254795163954">
-          <div class="contact-btn-icon" style="background:rgba(245,158,11,0.12);">📞</div>
-          <div class="contact-btn-text"><strong>Call Us</strong><span>+254 795 163 954 · Mon–Fri, 8am–6pm EAT</span></div>
-        </a>
-      </div>
-    </div>
-    <div>
-      <div class="claim-form-wrap" style="padding:40px;">
-        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:24px;">Send Us a Message</h3>
-        <div id="contact-success" style="display:none;text-align:center;padding:24px;">
-          <div style="font-size:48px;margin-bottom:12px;">✅</div>
-          <p>Message sent! We'll reply within 24 hours.</p>
-        </div>
-        <div id="contact-form-body">
-          <div class="form-field" style="margin-bottom:16px;"><label>Name</label><input type="text" id="ct-name" placeholder="Your name"/></div>
-          <div class="form-field" style="margin-bottom:16px;"><label>Email</label><input type="email" id="ct-email" placeholder="your@email.com"/></div>
-          <div class="form-field" style="margin-bottom:16px;"><label>Subject</label>
-            <select id="ct-subject">
-              <option>General Inquiry</option>
-              <option>Partnership / Investment</option>
-              <option>Press / Media</option>
-              <option>Research Collaboration</option>
-              <option>Technical Support</option>
+    <div class="calc-wrap fade-in">
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div>
+            <div class="input-label">Monthly Income (KSh)</div>
+            <div class="input-row"><input type="range" id="income-slider" min="5000" max="500000" step="5000" value="50000" oninput="updateCalc(this,'income-val',v=>fmtNum(v))"/><span class="range-val" id="income-val">50,000</span></div>
+          </div>
+          <div>
+            <div class="input-label">Interruptions per Year (λ)</div>
+            <div class="input-row"><input type="range" id="freq-slider" min="1" max="12" step="1" value="2" oninput="updateCalc(this,'freq-val',v=>v)"/><span class="range-val" id="freq-val">2</span></div>
+          </div>
+          <div>
+            <div class="input-label">Avg. Interruption Duration (Days)</div>
+            <div class="input-row"><input type="range" id="days-slider" min="3" max="90" step="1" value="15" oninput="updateCalc(this,'days-val',v=>v+' days')"/><span class="range-val" id="days-val">15 days</span></div>
+          </div>
+          <div>
+            <div class="input-label">Income Replacement Ratio (R)</div>
+            <div class="input-row"><input type="range" id="ratio-slider" min="0.3" max="0.9" step="0.05" value="0.6" oninput="updateCalc(this,'ratio-val',v=>Math.round(v*100)+'%')"/><span class="range-val" id="ratio-val">60%</span></div>
+          </div>
+          <div>
+            <div class="input-label">Risk Category</div>
+            <select id="risk-cat" onchange="recalc()">
+              <option value="0.15">Low Risk — Multi-platform, 100K+ followers</option>
+              <option value="0.20" selected>Standard — Single platform, active creator</option>
+              <option value="0.28">Elevated — New creator, &lt;10K followers</option>
+              <option value="0.35">High Risk — Solo platform, past deactivations</option>
             </select>
           </div>
-          <div class="form-field" style="margin-bottom:24px;"><label>Message</label><textarea id="ct-msg" placeholder="How can we help you?" style="min-height:100px;"></textarea></div>
-          <button class="btn-primary" style="width:100%;justify-content:center;" onclick="sendContact()">Send Message →</button>
+          <div>
+            <div class="input-label">Waiting Period</div>
+            <select id="wait-period" onchange="recalc()">
+              <option value="0.95">3 Days (premium coverage)</option>
+              <option value="1.0" selected>7 Days (standard)</option>
+              <option value="1.08">14 Days (lower premium)</option>
+              <option value="1.18">30 Days (budget coverage)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-result">
+          <div class="big-premium" id="annual-premium">KSh 36,000</div>
+          <div class="big-period">per year</div>
+          <div class="monthly-equiv" id="monthly-equiv">≈ KSh 3,000/month</div>
+          <div class="breakdown-title">Actuarial Breakdown</div>
+          <div class="br-row"><span>Daily income (I/30)</span><span id="br-daily">—</span></div>
+          <div class="br-row"><span>Replacement ratio (R)</span><span id="br-ratio">—</span></div>
+          <div class="br-row"><span>Duration (D days)</span><span id="br-days">—</span></div>
+          <div class="br-row"><span>Expected severity X'</span><span id="br-severity">—</span></div>
+          <div class="br-row"><span>Frequency λ</span><span id="br-freq">—</span></div>
+          <div class="br-row"><span>Expected loss E[L]</span><span id="br-eloss">—</span></div>
+          <div class="br-row"><span>Loading factor θ</span><span id="br-load">—</span></div>
+          <div class="br-row"><span><strong>Annual Premium</strong></span><span id="br-final">—</span></div>
+          <div class="calc-actions">
+            <button class="btn-primary" style="justify-content:center;" onclick="openWaitlistFromCalc()">Get This Quote →</button>
+            <button class="btn-whatsapp" style="justify-content:center;" id="wa-quote-btn" onclick="sendWhatsAppQuote()">💬 Send Quote to WhatsApp</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-</section>
+  </section>
 
-<section id="faq">
-<div class="section-wrap">
-  <div class="fade-in">
-    <span class="section-tag">FAQ</span>
-    <h2 class="section-title">Common Questions<br/>Answered</h2>
+  <section id="methodology" style="background:var(--surface);border-top:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">Actuarial Science</span>
+      <h2 class="section-title">The Math Behind<br/>Fair Pricing</h2>
+      <p class="section-sub">Built on peer-reviewed actuarial models adapted for the realities of digital creator income in Kenya.</p>
+    </div>
+    <div class="method-grid fade-in">
+      <div class="method-card">
+        <h3>📊 Claim Frequency Model</h3>
+        <p>Interruptions per year follow a <strong>Poisson distribution</strong> — ideal for counting rare, independent events over time.</p>
+        <div class="formula">P(N=k) = λ<sup>k</sup> · e<sup>-λ</sup> / k!<br/><span class="c">// λ = avg. interruptions/year ≈ 2.0</span></div>
+        <p style="font-size:14px;color:var(--muted);">Survey data from Kenyan creators shows an average of λ = 2.0 interruptions per year, varying by platform and audience size.</p>
+      </div>
+      <div class="method-card">
+        <h3>📈 Claim Severity Model</h3>
+        <p>Monetary loss per interruption follows a <strong>Lognormal distribution</strong> — suited to right-skewed income with a zero lower bound.</p>
+        <div class="formula">X' = I × R × D<br/><span class="c">// I=income, R=ratio, D=days</span><br/>f(x) = 1/(x'σ√2π)·exp[−(lnx'−μ)²/2σ²]</div>
+        <p style="font-size:14px;color:var(--muted);">X' captures the actual monetary loss incorporating both the income replacement ratio and interruption duration.</p>
+      </div>
+      <div class="method-card">
+        <h3>💰 Premium Calculation</h3>
+        <p>Final premium combines expected loss with actuarial loadings for admin, profit margin, and adverse selection risk.</p>
+        <div class="formula">E[L] = λ × E[X']<br/>Premium = E[L] × (1 + θ)<br/><span class="c">// θ = loading factor (15–35%)</span></div>
+        <p style="font-size:14px;color:var(--muted);">Example: 2 interruptions/yr × KSh 15,000 severity × 1.20 loading = <strong>KSh 36,000/yr</strong></p>
+      </div>
+      <div class="method-card">
+        <h3>🛡️ Moral Hazard Controls</h3>
+        <p>Multiple mechanisms prevent fraud and reduce moral hazard, keeping premiums fair for the entire pool.</p>
+        <div class="formula">Waiting period: 7–30 days<br/>Deductible: 10–20% co-pay<br/>Payouts tied to: views + engagement<br/><span class="c">// platform API verification</span></div>
+        <p style="font-size:14px;color:var(--muted);">Claims require platform logs, illness certificates, and engagement data verified through INSUTOK app API integrations.</p>
+      </div>
+    </div>
   </div>
-  <div class="faq-list fade-in" id="faq-list"></div>
+  </section>
+
+  <section id="plans">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">Coverage Plans</span>
+      <h2 class="section-title">Choose Your<br/>Protection Level</h2>
+      <p class="section-sub">Risk-classified pricing ensures you pay premiums tailored to your actual risk profile.</p>
+    </div>
+    <div class="tiers-grid fade-in">
+      <div class="tier bronze">
+        <div class="tier-tag">Bronze</div>
+        <h3>Starter</h3>
+        <div class="tier-price">From KSh 18,000/yr · KSh 1,500/mo</div>
+        <ul>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>30-day waiting period</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>50% income replacement</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Up to 30 days per claim</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Max 1 claim per year</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Illness coverage only</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>M-PESA payouts</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Basic INSUTOK app</li>
+        </ul>
+        <button class="tier-cta" onclick="openModal('Bronze')">Get Started →</button>
+      </div>
+      <div class="tier gold">
+        <div class="tier-tag">Gold ★</div>
+        <h3>Professional</h3>
+        <div class="tier-price">From KSh 36,000/yr · KSh 3,000/mo</div>
+        <ul>
+          <li><span class="tier-check">✓</span>7-day waiting period</li>
+          <li><span class="tier-check">✓</span>60% income replacement</li>
+          <li><span class="tier-check">✓</span>Up to 60 days per claim</li>
+          <li><span class="tier-check">✓</span>Max 3 claims per year</li>
+          <li><span class="tier-check">✓</span>All disruption types</li>
+          <li><span class="tier-check">✓</span>Full INSUTOK dashboard</li>
+          <li><span class="tier-check">✓</span>Platform API verification</li>
+          <li><span class="tier-check">✓</span>Financial literacy coaching</li>
+          <li><span class="tier-check">✓</span>M-PESA or bank payouts</li>
+          <li><span class="tier-check">✓</span>Priority WhatsApp support</li>
+        </ul>
+        <button class="tier-cta" onclick="openModal('Gold')">Get Started →</button>
+      </div>
+      <div class="tier silver">
+        <div class="tier-tag">Silver</div>
+        <h3>Growth</h3>
+        <div class="tier-price">From KSh 27,000/yr · KSh 2,250/mo</div>
+        <ul>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>14-day waiting period</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>55% income replacement</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Up to 45 days per claim</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Max 2 claims per year</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Illness + brand deal loss</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>INSUTOK app access</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>M-PESA payouts</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Claims tracking portal</li>
+        </ul>
+        <button class="tier-cta" onclick="openModal('Silver')">Get Started →</button>
+      </div>
+    </div>
+  </div>
+  </section>
 </div>
-</section>
+
+<div id="tab-support" class="tab-content">
+  <div class="tab-padding-top"></div> <section id="claim">
+  <div class="section-wrap">
+    <div class="fade-in" style="margin-bottom:52px;">
+      <span class="section-tag">File a Claim</span>
+      <h2 class="section-title">Report an Income<br/>Interruption</h2>
+      <p class="section-sub">Complete the form below. Our team reviews claims within 48 hours and will contact you by email and WhatsApp.</p>
+    </div>
+    <div class="claim-form-wrap fade-in">
+      <div id="claim-success" style="display:none;text-align:center;padding:40px;">
+        <div style="font-size:64px;margin-bottom:16px;">✅</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:24px;margin-bottom:12px;">Claim Submitted!</h3>
+        <p style="color:var(--muted);">Reference <strong id="claim-ref" style="color:var(--accent);">—</strong><br/>We'll review within 48 hours and contact you by email and WhatsApp.</p>
+        <button class="btn-primary" style="margin-top:28px;" onclick="resetClaimForm()">Submit Another</button>
+      </div>
+      <div id="claim-form-body">
+      <div class="form-grid">
+        <div class="form-field"><label>Full Name *</label><input type="text" id="c-name" placeholder="Your full legal name"/></div>
+        <div class="form-field"><label>Email Address *</label><input type="email" id="c-email" placeholder="your@email.com"/></div>
+        <div class="form-field"><label>Phone / M-PESA Number *</label><input type="tel" id="c-phone" placeholder="+254 7XX XXX XXX"/></div>
+        <div class="form-field"><label>Policy Number</label><input type="text" id="c-policy" placeholder="e.g. INS-2025-XXXXX (if existing)"/></div>
+        <div class="form-field"><label>Primary Platform *</label>
+          <select id="c-platform">
+            <option value="">Select platform</option>
+            <option>TikTok</option><option>YouTube</option><option>Instagram</option>
+            <option>Twitter/X</option><option>Multiple Platforms</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Type of Interruption *</label>
+          <select id="c-type">
+            <option value="">Select reason</option>
+            <option>Illness / Medical</option><option>Account Deactivation / Ban</option>
+            <option>Demonetisation</option><option>Brand Deal Cancellation</option>
+            <option>Algorithm-Driven Income Drop</option><option>Platform Technical Outage</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Interruption Start Date *</label><input type="date" id="c-start"/></div>
+        <div class="form-field"><label>Expected / Actual End Date</label><input type="date" id="c-end"/></div>
+        <div class="form-field"><label>Average Monthly Income (KSh) *</label><input type="number" id="c-income" placeholder="e.g. 75000"/></div>
+        <div class="form-field"><label>Coverage Plan</label>
+          <select id="c-plan">
+            <option value="">Select plan</option>
+            <option>Bronze – Starter (KSh 18,000/yr)</option>
+            <option>Silver – Growth (KSh 27,000/yr)</option>
+            <option>Gold – Professional (KSh 36,000/yr)</option>
+          </select>
+        </div>
+        <div class="form-field full"><label>Description of Interruption *</label>
+          <textarea id="c-desc" placeholder="Describe what happened in detail — platform notifications, medical advice received, brand communications, etc."></textarea>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;padding:18px;font-size:16px;" onclick="submitClaim()">
+        Submit Claim →
+      </button>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  <section id="contact" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">Get In Touch</span>
+      <h2 class="section-title">We're Here<br/>to Help</h2>
+    </div>
+    <div class="contact-grid fade-in">
+      <div class="contact-info">
+        <h3>Talk to the INSUTOK team</h3>
+        <p>Whether you're a content creator wanting to learn more, an insurer interested in partnering, or a researcher, we'd love to hear from you. Based at Egerton University, Kenya.</p>
+        <div class="contact-methods">
+          <a class="contact-btn" href="https://wa.me/254795163954?text=Hi%20INSUTOK!" target="_blank">
+            <div class="contact-btn-icon" style="background:rgba(37,211,102,0.12);">💬</div>
+            <div class="contact-btn-text"><strong>WhatsApp</strong><span>Chat with us instantly — usually reply within 1 hour</span></div>
+          </a>
+          <a class="contact-btn" href="mailto:insutok@egerton.ac.ke">
+            <div class="contact-btn-icon" style="background:rgba(59,130,246,0.12);">✉️</div>
+            <div class="contact-btn-text"><strong>Email</strong><span>insutok@egerton.ac.ke · We respond within 24hrs</span></div>
+          </a>
+          <a class="contact-btn" href="tel:+254795163954">
+            <div class="contact-btn-icon" style="background:rgba(245,158,11,0.12);">📞</div>
+            <div class="contact-btn-text"><strong>Call Us</strong><span>+254 795 163 954 · Mon–Fri, 8am–6pm EAT</span></div>
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="claim-form-wrap" style="padding:40px;">
+          <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:24px;">Send Us a Message</h3>
+          <div id="contact-success" style="display:none;text-align:center;padding:24px;">
+            <div style="font-size:48px;margin-bottom:12px;">✅</div>
+            <p>Message sent! We'll reply within 24 hours.</p>
+          </div>
+          <div id="contact-form-body">
+            <div class="form-field" style="margin-bottom:16px;"><label>Name</label><input type="text" id="ct-name" placeholder="Your name"/></div>
+            <div class="form-field" style="margin-bottom:16px;"><label>Email</label><input type="email" id="ct-email" placeholder="your@email.com"/></div>
+            <div class="form-field" style="margin-bottom:16px;"><label>Subject</label>
+              <select id="ct-subject">
+                <option>General Inquiry</option>
+                <option>Partnership / Investment</option>
+                <option>Press / Media</option>
+                <option>Research Collaboration</option>
+                <option>Technical Support</option>
+              </select>
+            </div>
+            <div class="form-field" style="margin-bottom:24px;"><label>Message</label><textarea id="ct-msg" placeholder="How can we help you?" style="min-height:100px;"></textarea></div>
+            <button class="btn-primary" style="width:100%;justify-content:center;" onclick="sendContact()">Send Message →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  <section id="faq">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <span class="section-tag">FAQ</span>
+      <h2 class="section-title">Common Questions<br/>Answered</h2>
+    </div>
+    <div class="faq-list fade-in" id="faq-list"></div>
+  </div>
+  </section>
+</div>
 
 <footer>
   <div class="footer-brand">
@@ -899,12 +934,10 @@ footer{
     <p>Income interruption insurance for Kenya's digital content creators. An Egerton University research project.</p>
   </div>
   <div class="footer-links">
-    <a href="#about">About</a>
-    <a href="#calculator">Calculator</a>
-    <a href="#plans">Plans</a>
-    <a href="#claim">File Claim</a>
-    <a href="#faq">FAQ</a>
-    <a href="#contact">Contact</a>
+    <a href="#" onclick="switchTab(event, 'tab-overview')">Overview</a>
+    <a href="#" onclick="switchTab(event, 'tab-pricing')">Calculator & Pricing</a>
+    <a href="#" onclick="switchTab(event, 'tab-support')">File Claim</a>
+    <a href="#" onclick="switchTab(event, 'tab-support')">FAQ & Contact</a>
   </div>
   <div class="footer-right">
     <p>Presented by Margret Mbula & Daisy Mutulia<br/>Egerton University · November 2025<br/>References: ILO (2024), Fairwork Kenya (2021),<br/>KIPPRA (2025), MDPI (2023)</p>
@@ -958,6 +991,36 @@ footer{
 </div>
 
 <script>
+// ─── TAB LOGIC ───
+function switchTab(e, tabId) {
+  if(e) e.preventDefault();
+  
+  // Hide all tabs & remove active classes
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+  
+  // Show selected tab
+  document.getElementById(tabId).classList.add('active');
+  
+  // Update nav link state
+  if(e && e.currentTarget && e.currentTarget.classList.contains('tab-link')) {
+    e.currentTarget.classList.add('active');
+  } else {
+    // Programmatic trigger fallback
+    const matchingLink = document.querySelector(`.tab-link[onclick*="${tabId}"]`);
+    if(matchingLink) matchingLink.classList.add('active');
+  }
+  
+  // Scroll to top
+  window.scrollTo({top: 0, behavior: 'instant'});
+  
+  // Trigger intersection animations for the new tab immediately
+  setTimeout(() => {
+    document.getElementById(tabId).querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+    document.getElementById(tabId).querySelectorAll('[data-target]').forEach(el => animCount(el));
+  }, 50);
+}
+
 // ─── EMAILJS INIT ───
 // Replace with your actual EmailJS public key
 (function(){emailjs.init({publicKey:"YOUR_EMAILJS_PUBLIC_KEY"});})();
@@ -966,7 +1029,7 @@ const EMAILJS_SERVICE_ID = "service_8bxr2xd";
 const EMAILJS_WAITLIST_TEMPLATE = "template_55i5bro";
 const EMAILJS_CLAIM_TEMPLATE = "template_55i5bro";
 const EMAILJS_CONTACT_TEMPLATE = "template_55i5bro";
-const WHATSAPP_NUMBER = "+254795163954"; // Replace with real number
+const WHATSAPP_NUMBER = "+254795163954"; 
 
 // ─── TOAST ───
 let toastTimeout;
@@ -1071,11 +1134,10 @@ async function submitWaitlist(){
     });
     document.getElementById('modal-form').style.display='none';
     document.getElementById('modal-success').style.display='';
-    // Open WhatsApp to send confirmation
+    
     const waMsg = encodeURIComponent(`Hi ${name}! 🎉 You've successfully joined the INSUTOK waitlist! We'll notify you when we launch. Selected plan: ${plan||'Not decided yet'}. Questions? Just reply here!`);
     if(phone) setTimeout(()=>window.open(`https://wa.me/${phone.replace(/\D/g,'')}?text=${waMsg}`, '_blank'), 1500);
   }catch(err){
-    // Fallback if EmailJS not configured
     document.getElementById('modal-form').style.display='none';
     document.getElementById('modal-success').style.display='';
     toast('You\'re on the waitlist! (Email service setup needed for confirmation emails)', '🎉', 6000);
@@ -1113,7 +1175,6 @@ async function submitClaim(){
   document.getElementById('claim-ref').textContent = ref;
   document.getElementById('claim-success').style.display='';
 
-  // WhatsApp confirmation
   const waMsg = encodeURIComponent(`Hi ${name}! ✅ Your INSUTOK claim has been received.\n\n📋 Reference: *${ref}*\nType: ${type}\nPlatform: ${platform}\n\nWe'll review within 48 hours and update you here. Stay tuned!`);
   setTimeout(()=>window.open(`https://wa.me/${phone.replace(/\D/g,'')}?text=${waMsg}`, '_blank'), 800);
 }
@@ -1188,15 +1249,9 @@ const obs = new IntersectionObserver((entries)=>{
 },{threshold:0.12});
 document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
 
-// Also observe stat nums directly
-document.querySelectorAll('[data-target]').forEach(el=>{
-  const itemObs = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{if(e.isIntersecting)animCount(e.target)});
-  },{threshold:0.5});
-  itemObs.observe(el);
-});
-
 function animCount(el){
+  if(el.classList.contains('counted')) return;
+  el.classList.add('counted');
   const target = +el.dataset.target;
   const isDecimal = el.dataset.decimal === '1';
   let current = 0;
@@ -1218,7 +1273,10 @@ document.querySelectorAll('input[type=range]').forEach(el=>{
 // ─── NAV SCROLL EFFECT ───
 window.addEventListener('scroll',()=>{
   const nav = document.getElementById('navbar');
-  nav.style.background = window.scrollY>40 ? 'rgba(10,12,16,0.96)' : 'rgba(10,12,16,0.88)';
+  // Check if we are on a desktop width to apply the background transition
+  if(window.innerWidth > 900) {
+    nav.style.background = window.scrollY>40 ? 'rgba(10,12,16,0.96)' : 'rgba(10,12,16,0.88)';
+  }
 });
 </script>
 </body>
