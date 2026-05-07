@@ -212,8 +212,8 @@ nav{
 .problem-grid,.features-grid,.tiers-grid{grid-template-columns:repeat(3,1fr);}
 .method-grid{grid-template-columns:1fr 1fr;}
 
-.p-card,.feat-card,.tier,.method-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-radius);padding:34px;position:relative;overflow:hidden;transition:all var(--t);}
-.p-card:hover,.feat-card:hover,.tier:hover{transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,0.3);border-color:var(--border2);}
+.p-card,.feat-card,.method-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-radius);padding:34px;position:relative;overflow:hidden;transition:all var(--t);}
+.p-card:hover,.feat-card:hover{transform:translateY(-3px);box-shadow:0 20px 60px rgba(0,0,0,0.3);border-color:var(--border2);}
 .p-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .p-card.c1::before{background:linear-gradient(90deg,#f59e0b,#f97316);}
 .p-card.c2::before{background:linear-gradient(90deg,#ef4444,#ec4899);}
@@ -248,14 +248,24 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 8px rgba(245,158,
 .br-row span:first-child{color:var(--muted);}
 .calc-actions{margin-top:24px;display:flex;flex-direction:column;gap:10px;}
 
-/* ── RESTORED TIER STYLES ── */
+/* ── RESTORED BEAUTIFUL TIER STYLES ── */
+.tier{
+  border-radius:var(--card-radius);padding:36px;
+  border:1px solid var(--border);position:relative;overflow:hidden;
+  transition:all var(--t);background:var(--surface);
+}
+.tier:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,0.3);}
 .tier-tag{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
 .tier h3{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
 .tier-price{font-size:14px;color:var(--muted);margin-bottom:28px;}
 .tier ul{list-style:none;display:flex;flex-direction:column;gap:11px;}
 .tier li{font-size:14px;display:flex;align-items:flex-start;gap:10px;line-height:1.4;}
 .tier-check{font-size:12px;font-weight:700;margin-top:1px;flex-shrink:0;}
-.tier-cta{width:100%;margin-top:28px;padding:13px;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all var(--t);border:none;}
+.tier-cta{
+  width:100%;margin-top:28px;padding:13px;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;
+  transition:all var(--t);border:none;
+}
 
 .tier.bronze{background:linear-gradient(160deg,rgba(205,127,50,0.06),var(--surface));}
 .tier.bronze .tier-tag,.tier.bronze .tier-check{color:#cd7f32;}
@@ -271,7 +281,11 @@ input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 8px rgba(245,158,
 .tier.gold .tier-tag,.tier.gold .tier-check{color:var(--accent);}
 .tier.gold .tier-cta{background:var(--accent);color:#000;}
 .tier.gold .tier-cta:hover{background:#fbbf24;}
-.tier.gold::after{content:'RECOMMENDED';position:absolute;top:20px;right:-28px;background:var(--accent);color:#000;font-size:9px;font-weight:700;letter-spacing:0.1em;padding:5px 40px;transform:rotate(35deg);}
+.tier.gold::after{
+  content:'RECOMMENDED';position:absolute;top:20px;right:-28px;
+  background:var(--accent);color:#000;font-size:9px;font-weight:700;
+  letter-spacing:0.1em;padding:5px 40px;transform:rotate(35deg);
+}
 
 /* ── FORMS & INPUTS ── */
 select, input[type=text], input[type=email], input[type=tel], input[type=date], input[type=number], textarea{
@@ -353,25 +367,100 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 .fade-in{opacity:0;transform:translateY(28px);transition:opacity 0.65s,transform 0.65s;}
 .fade-in.visible{opacity:1;transform:translateY(0);}
 
-/* ── PDF REPORT TEMPLATE ── */
+/* ── CORRECTED PDF REPORT TEMPLATE ── */
 #pdf-report-container {
-  display: none; /* Hidden by default */
-  background: #ffffff; /* Explicit white for PDF */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -9999;
+  visibility: hidden;
+  background: #ffffff;
   color: #1a1a1a;
-  padding: 40px;
-  width: 800px;
+  padding: 35px 45px;
+  width: 760px; /* Optimal width for A4 portrait without wrapping */
   font-family: 'DM Sans', sans-serif;
+  box-sizing: border-box;
 }
-#pdf-report-container h1 { font-family: 'Syne', sans-serif; color: #f59e0b; margin-bottom: 5px; font-size: 32px; }
-#pdf-report-container h2 { font-family: 'Syne', sans-serif; color: #333; font-size: 18px; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px;}
-#pdf-report-container p { font-size: 14px; color: #555; }
-.pdf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.pdf-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; }
-.pdf-row { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px solid #eee; }
+
+#pdf-report-container .pdf-header {
+  border-bottom: 3px solid #f59e0b;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+#pdf-report-container h1 { 
+  font-family: 'Syne', sans-serif; 
+  color: #f59e0b; 
+  margin: 0; 
+  font-size: 38px; 
+  line-height: 1;
+}
+
+#pdf-report-container .pdf-meta {
+  text-align: right;
+  font-size: 12px;
+  color: #666;
+}
+
+#pdf-report-container h2 { 
+  font-family: 'Syne', sans-serif; 
+  color: #111; 
+  font-size: 18px; 
+  margin-top: 30px; 
+  margin-bottom: 15px; 
+  background: #f8fafc;
+  padding: 8px 12px;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+}
+
+.pdf-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 25px; 
+}
+
+.pdf-box { 
+  background: #ffffff; 
+  border: 1px solid #e2e8f0; 
+  border-radius: 8px; 
+  padding: 15px 20px; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.pdf-row { 
+  display: flex; 
+  justify-content: space-between; 
+  font-size: 13px; 
+  padding: 8px 0; 
+  border-bottom: 1px dashed #e2e8f0; 
+}
 .pdf-row:last-child { border-bottom: none; }
-.pdf-row strong { color: #111; }
-.pdf-chart-img { width: 100%; max-height: 250px; object-fit: contain; margin-top: 10px; background: white; border: 1px solid #eee; border-radius: 8px; padding: 10px;}
-.pdf-footer { margin-top: 40px; font-size: 11px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
+.pdf-row span { color: #555; }
+.pdf-row strong { color: #000; font-weight: 600; text-align: right;}
+
+.pdf-chart-img { 
+  width: 100%; 
+  max-height: 240px; 
+  object-fit: contain; 
+  margin-top: 10px; 
+  background: white; 
+  border: 1px solid #e2e8f0; 
+  border-radius: 8px; 
+  padding: 10px;
+}
+
+.pdf-footer { 
+  margin-top: 40px; 
+  font-size: 11px; 
+  color: #888; 
+  text-align: center; 
+  border-top: 1px solid #e2e8f0; 
+  padding-top: 15px; 
+}
 
 @media(max-width:900px){
   nav{height: auto; padding: 15px 20px; flex-wrap: wrap; background: rgba(10,12,16,0.96);}
@@ -607,13 +696,13 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
         <h3>Starter</h3>
         <div class="tier-price">From KSh 18,000/yr · KSh 1,500/mo</div>
         <ul>
-          <li><span class="tier-check">✓</span>30-day waiting period</li>
-          <li><span class="tier-check">✓</span>50% income replacement</li>
-          <li><span class="tier-check">✓</span>Up to 30 days per claim</li>
-          <li><span class="tier-check">✓</span>Max 1 claim per year</li>
-          <li><span class="tier-check">✓</span>Illness coverage only</li>
-          <li><span class="tier-check">✓</span>M-PESA payouts</li>
-          <li><span class="tier-check">✓</span>Basic INSUTOK app</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>30-day waiting period</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>50% income replacement</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Up to 30 days per claim</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Max 1 claim per year</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Illness coverage only</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>M-PESA payouts</li>
+          <li><span class="tier-check" style="color:#cd7f32;">✓</span>Basic INSUTOK app</li>
         </ul>
         <button class="tier-cta" onclick="openModal('Bronze')">Get Started →</button>
       </div>
@@ -640,14 +729,14 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
         <h3>Growth</h3>
         <div class="tier-price">From KSh 27,000/yr · KSh 2,250/mo</div>
         <ul>
-          <li><span class="tier-check">✓</span>14-day waiting period</li>
-          <li><span class="tier-check">✓</span>55% income replacement</li>
-          <li><span class="tier-check">✓</span>Up to 45 days per claim</li>
-          <li><span class="tier-check">✓</span>Max 2 claims per year</li>
-          <li><span class="tier-check">✓</span>Illness + brand deal loss</li>
-          <li><span class="tier-check">✓</span>INSUTOK app access</li>
-          <li><span class="tier-check">✓</span>M-PESA payouts</li>
-          <li><span class="tier-check">✓</span>Claims tracking portal</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>14-day waiting period</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>55% income replacement</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Up to 45 days per claim</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Max 2 claims per year</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Illness + brand deal loss</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>INSUTOK app access</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>M-PESA payouts</li>
+          <li><span class="tier-check" style="color:#a0a0c0;">✓</span>Claims tracking portal</li>
         </ul>
         <button class="tier-cta" onclick="openModal('Silver')">Get Started →</button>
       </div>
@@ -887,11 +976,16 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 </div>
 
 <div id="pdf-report-container">
-  <h1>INSUTOK</h1>
-  <p style="color:#888; margin-top:-5px;">Income-Interruption Risk Profile & Actuarial Breakdown</p>
-  
-  <p style="margin-top: 20px;"><strong>Date Generated:</strong> <span id="rep-date"></span><br>
-  <strong>Reference ID:</strong> <span id="rep-ref"></span></p>
+  <div class="pdf-header">
+    <div>
+      <h1>INSUTOK</h1>
+      <p style="color:#666; margin:5px 0 0 0; font-size:16px;">Income-Interruption Risk Profile & Actuarial Breakdown</p>
+    </div>
+    <div class="pdf-meta">
+      <strong>Date Generated:</strong> <span id="rep-date"></span><br>
+      <strong>Reference ID:</strong> <span id="rep-ref"></span>
+    </div>
+  </div>
 
   <h2>1. Creator Risk Profile (Inputs)</h2>
   <div class="pdf-grid">
@@ -908,26 +1002,31 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
   </div>
 
   <h2>2. Actuarial Breakdown (Outputs)</h2>
-  <div class="pdf-grid">
-    <div class="pdf-box" style="background:#fff8ec; border-color:#f59e0b;">
+  <div class="pdf-grid" style="grid-template-columns: 1fr;">
+    <div class="pdf-box" style="background:#fffbeb; border-color:#fcd34d;">
       <div class="pdf-row"><span>Daily Income (I/30):</span> <strong id="rep-out-daily"></strong></div>
       <div class="pdf-row"><span>Expected Severity (X'):</span> <strong id="rep-out-sev"></strong></div>
       <div class="pdf-row"><span>Expected Loss (E[L]):</span> <strong id="rep-out-eloss"></strong></div>
-      <div class="pdf-row" style="margin-top:8px; border-top:1px solid #e5e7eb; padding-top:10px;">
-        <span style="color:#f59e0b; font-weight:bold;">Calculated Annual Premium:</span> 
-        <strong id="rep-out-premium" style="color:#f59e0b; font-size:16px;"></strong>
+      <div class="pdf-row" style="margin-top:10px; border-top:1px dashed #fcd34d; padding-top:12px;">
+        <span style="color:#b45309; font-weight:bold; font-size:15px;">Calculated Annual Premium:</span> 
+        <strong id="rep-out-premium" style="color:#d97706; font-size:18px;"></strong>
       </div>
     </div>
   </div>
 
   <h2>3. Mathematical Risk Models</h2>
-  <p style="margin-bottom:10px;">The following models utilize a Poisson distribution for claim frequency and a Lognormal distribution for claim severity, calibrated for the Kenyan gig economy based on Egerton University research.</p>
+  <p style="margin-bottom:10px; font-size:13px;">The following models utilize a Poisson distribution for claim frequency and a Lognormal distribution for claim severity, calibrated for the Kenyan gig economy based on Egerton University research.</p>
   
-  <h4 style="margin-top:20px; color:#444;">Frequency Risk (Poisson PMF)</h4>
-  <img id="rep-img-poisson" class="pdf-chart-img" />
-
-  <h4 style="margin-top:20px; color:#444;">Financial Severity (Lognormal PDF)</h4>
-  <img id="rep-img-lognormal" class="pdf-chart-img" />
+  <div class="pdf-grid">
+    <div>
+      <h4 style="margin-top:10px; margin-bottom:5px; color:#333; font-size:14px;">Frequency Risk (Poisson PMF)</h4>
+      <img id="rep-img-poisson" class="pdf-chart-img" />
+    </div>
+    <div>
+      <h4 style="margin-top:10px; margin-bottom:5px; color:#333; font-size:14px;">Financial Severity (Lognormal PDF)</h4>
+      <img id="rep-img-lognormal" class="pdf-chart-img" />
+    </div>
+  </div>
 
   <div class="pdf-footer">
     This report is algorithmically generated based on user inputs via the INSUTOK calculator. <br>
@@ -1043,14 +1142,13 @@ function updateCharts() {
     poissonChartInstance.data.datasets[0].data = pData.data;
     poissonChartInstance.update();
   } else {
-    // Adding white background plugin for PDF export visibility
     const customCanvasBackgroundColor = {
       id: 'customCanvasBackgroundColor',
       beforeDraw: (chart, args, options) => {
         const {ctx} = chart;
         ctx.save();
         ctx.globalCompositeOperation = 'destination-over';
-        ctx.fillStyle = options.color || '#13161e'; // Default to surface color
+        ctx.fillStyle = options.color || '#13161e'; 
         ctx.fillRect(0, 0, chart.width, chart.height);
         ctx.restore();
       }
@@ -1199,13 +1297,13 @@ function downloadReport() {
   document.getElementById('rep-out-eloss').textContent = document.getElementById('br-eloss').textContent;
   document.getElementById('rep-out-premium').textContent = document.getElementById('annual-premium').textContent;
 
-  // Grab chart canvases and explicitly set them to white bg for the export image
+  // Grab chart canvases
   const pChart = document.getElementById('poissonChart');
   const lChart = document.getElementById('lognormalChart');
   
   // Briefly update plugins to render white background for the PDF export
   poissonChartInstance.options.plugins.customCanvasBackgroundColor.color = '#ffffff';
-  Chart.defaults.color = '#333'; // Make text dark for PDF
+  Chart.defaults.color = '#333'; 
   poissonChartInstance.update();
   
   lognormalChartInstance.options.plugins.customCanvasBackgroundColor.color = '#ffffff';
@@ -1223,23 +1321,26 @@ function downloadReport() {
     lognormalChartInstance.options.plugins.customCanvasBackgroundColor.color = '#13161e';
     lognormalChartInstance.update();
 
-    // Trigger html2pdf
+    // Fetch the container
     const element = document.getElementById('pdf-report-container');
-    element.style.display = 'block'; // Unhide just for capture
+    
+    // Unhide and explicitly force it to the top left so html2canvas doesn't capture blank scroll space
+    element.style.visibility = 'visible';
 
     const opt = {
-      margin:       0.4,
+      margin:       0.3,
       filename:     'INSUTOK_Risk_Report.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      image:        { type: 'jpeg', quality: 1 },
+      // Adding scrollY: 0 and windowY: 0 solves the "starts halfway down the page" bug
+      html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0, windowY: 0 },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
 
     html2pdf().set(opt).from(element).save().then(() => {
-      element.style.display = 'none'; // Hide again
+      element.style.visibility = 'hidden'; 
       toast('Report downloaded successfully!', '✅');
     });
-  }, 300); // Small delay to ensure chart updates have rendered
+  }, 350); 
 }
 
 // ─── WHATSAPP QUOTE ───
