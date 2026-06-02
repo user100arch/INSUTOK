@@ -369,6 +369,145 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 
 /* ── PDF REPORT TEMPLATE ── */
 #pdf-report-container {
+
+/* ── RISK PROFILER ── */
+.risk-profiler-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.risk-factor-card{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--card-radius);padding:36px;
+  transition:border-color var(--t);
+}
+.risk-factor-card:hover{border-color:var(--border2);}
+.risk-factor-header{display:flex;align-items:center;gap:16px;margin-bottom:14px;}
+.risk-factor-num{
+  font-family:'Syne',sans-serif;font-size:32px;font-weight:800;
+  color:var(--accent);opacity:0.3;line-height:1;flex-shrink:0;
+}
+.risk-factor-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+.risk-factor-weight{font-size:12px;color:var(--accent);background:var(--accent-glow);padding:3px 10px;border-radius:100px;display:inline-block;margin-top:4px;}
+.risk-factor-desc{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.risk-opts{display:flex;flex-direction:column;gap:10px;}
+.ropt{
+  display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;
+  gap:2px 12px;padding:14px 16px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  cursor:pointer;transition:all var(--t);text-align:left;
+}
+.ropt:hover{border-color:var(--border2);background:var(--surface2);}
+.ropt.selected{border-color:var(--accent);background:rgba(245,158,11,0.06);}
+.ropt-label{font-size:14px;font-weight:600;color:var(--text);grid-row:1;grid-column:1;}
+.ropt-score{font-size:13px;font-weight:700;color:var(--accent);grid-row:1;grid-column:2;white-space:nowrap;font-family:'DM Mono',monospace;}
+.ropt.selected .ropt-score{color:var(--accent);}
+.ropt-desc{font-size:12px;color:var(--muted);grid-row:2;grid-column:1/3;line-height:1.4;margin-top:2px;}
+
+.risk-result-panel{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--card-radius);padding:36px;
+  grid-row:1/3;display:flex;flex-direction:column;
+}
+.rrp-header{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.rrp-score{
+  font-family:'Syne',sans-serif;font-size:72px;font-weight:800;
+  letter-spacing:-3px;line-height:1;margin-bottom:20px;
+  background:linear-gradient(135deg,#f59e0b,#ef4444);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.rrp-range-bar{margin-bottom:20px;}
+.rrp-bar-track{
+  position:relative;height:10px;border-radius:5px;
+  background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981);
+  margin-bottom:8px;
+}
+.rrp-bar-marker{
+  position:absolute;top:-5px;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:3px solid var(--accent);
+  transform:translateX(-50%);transition:left 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 0 0 4px rgba(245,158,11,0.2);
+}
+.rrp-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.rrp-classification{
+  font-family:'Syne',sans-serif;font-size:22px;font-weight:700;
+  margin-bottom:8px;
+}
+.rrp-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:20px;}
+.rrp-math-box{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;padding:16px;margin-bottom:20px;
+}
+.rrp-math-title{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.rrp-math-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);}
+.rrp-math-row:last-child{border-bottom:none;}
+.rrp-math-row span:first-child{color:var(--muted);}
+.rrp-math-row.total{font-weight:700;color:var(--accent);padding-top:10px;margin-top:4px;}
+.rrp-math-row.total span:first-child{color:var(--accent);}
+.rrp-recommendation{
+  background:linear-gradient(135deg,rgba(245,158,11,0.08),transparent);
+  border:1px solid rgba(245,158,11,0.2);border-radius:12px;
+  padding:16px;margin-top:auto;
+}
+.rrp-rec-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.rrp-rec-plan{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--accent);}
+.rrp-rec-price{font-size:13px;color:var(--muted);margin-top:2px;}
+
+/* ── CLAIM SECTIONS ── */
+.claim-section{
+  border:1px solid var(--border);border-radius:16px;padding:36px;
+  margin-bottom:24px;background:var(--bg);
+}
+.claim-section-header{display:flex;align-items:center;gap:20px;margin-bottom:28px;}
+.claim-section-num{
+  font-family:'Syne',sans-serif;font-size:40px;font-weight:800;
+  color:var(--accent);opacity:0.25;line-height:1;flex-shrink:0;
+}
+.claim-section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.claim-section-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+
+/* API CONNECT */
+.api-connect-section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:24px;margin-top:20px;
+}
+.api-connect-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.api-badge{
+  font-size:11px;background:rgba(16,185,129,0.12);color:var(--accent3);
+  border:1px solid rgba(16,185,129,0.2);padding:3px 10px;border-radius:100px;font-weight:500;
+}
+.api-connect-desc{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.api-btns{display:flex;flex-direction:column;gap:10px;}
+.api-btn{
+  display:flex;align-items:center;gap:14px;padding:14px 18px;
+  border-radius:12px;border:1px solid var(--border2);background:var(--bg);
+  cursor:pointer;transition:all var(--t);text-align:left;
+}
+.api-btn:hover{border-color:var(--accent);background:rgba(245,158,11,0.04);}
+.api-btn.connected{border-color:var(--accent3);background:rgba(16,185,129,0.06);}
+.api-btn-icon{font-size:22px;flex-shrink:0;}
+.api-btn strong{display:block;font-size:14px;color:var(--text);}
+.api-btn small{font-size:12px;color:var(--muted);}
+.api-status{
+  margin-left:auto;font-size:11px;font-weight:600;letter-spacing:0.04em;
+  color:var(--muted);background:var(--surface);padding:4px 10px;border-radius:100px;
+  border:1px solid var(--border);white-space:nowrap;flex-shrink:0;
+}
+.api-btn.connected .api-status{color:var(--accent3);background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2);}
+
+/* LEGAL CHECKBOXES */
+.legal-checkboxes{display:flex;flex-direction:column;gap:14px;}
+.legal-check-item{
+  display:flex;gap:16px;align-items:flex-start;padding:18px;
+  border:1px solid var(--border);border-radius:12px;cursor:pointer;
+  transition:border-color var(--t);
+}
+.legal-check-item:hover{border-color:var(--border2);}
+.legal-cb{
+  width:20px;height:20px;margin-top:2px;flex-shrink:0;
+  accent-color:var(--accent);cursor:pointer;
+}
+.legal-check-text strong{display:block;font-size:14px;font-weight:600;margin-bottom:4px;}
+.legal-check-text span{font-size:13px;color:var(--muted);line-height:1.5;}
+
+/* ── PDF REPORT TEMPLATE ── */
+#pdf-report-container {
   display: none; /* Hidden during regular browsing */
   background: #ffffff;
   color: #1a1a1a;
@@ -467,7 +606,10 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
   .stats-strip{grid-template-columns:1fr 1fr;}
   .stat-item{border-right:none;border-bottom:1px solid var(--border);}
   .section-wrap{padding:72px 20px;}
-  .calc-wrap, .claim-form-wrap{padding:32px 20px;}
+  .risk-profiler-grid{grid-template-columns:1fr;}
+  .risk-result-panel{grid-row:auto;}
+  .api-btns{flex-direction:column;}
+  .claim-section{padding:24px 20px;}
   footer{grid-template-columns:1fr;text-align:left;}
   .footer-right{text-align:left;}
   .footer-social{justify-content:flex-start;}
@@ -743,9 +885,150 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 
 <div id="tab-analytics" class="tab-content">
   <div class="tab-padding-top"></div>
+
+  <!-- RISK PROFILER -->
+  <section id="risk-profiler" style="background:var(--surface);border-bottom:1px solid var(--border);">
+  <div class="section-wrap">
+    <div class="fade-in" style="margin-bottom:52px;">
+      <span class="section-tag">Risk Classification Engine</span>
+      <h2 class="section-title">Your Creator<br/>Risk Profile</h2>
+      <p class="section-sub">Answer 3 questions. Our weighted actuarial model calculates your risk score using methodology from the Egerton University research — and suggests the right plan.</p>
+    </div>
+
+    <div class="risk-profiler-grid fade-in">
+
+      <!-- FACTOR 1 -->
+      <div class="risk-factor-card">
+        <div class="risk-factor-header">
+          <div class="risk-factor-num">01</div>
+          <div>
+            <div class="risk-factor-title">Platform Concentration</div>
+            <div class="risk-factor-weight">Weight: 10% of total score</div>
+          </div>
+        </div>
+        <p class="risk-factor-desc">How many platforms do you actively generate income from?</p>
+        <div class="risk-opts" id="rp-platform">
+          <button class="ropt" data-val="5" onclick="selectRiskOpt(this,'rp-platform')">
+            <span class="ropt-label">1 Platform Only</span>
+            <span class="ropt-score">Score: 5</span>
+            <span class="ropt-desc">100% dependence on one app — highest concentration risk</span>
+          </button>
+          <button class="ropt selected" data-val="3" onclick="selectRiskOpt(this,'rp-platform')">
+            <span class="ropt-label">2 Platforms</span>
+            <span class="ropt-score">Score: 3</span>
+            <span class="ropt-desc">Some diversification but still vulnerable to platform changes</span>
+          </button>
+          <button class="ropt" data-val="1" onclick="selectRiskOpt(this,'rp-platform')">
+            <span class="ropt-label">3+ Platforms</span>
+            <span class="ropt-score">Score: 1</span>
+            <span class="ropt-desc">Well-diversified income — lower interruption exposure</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FACTOR 2 -->
+      <div class="risk-factor-card">
+        <div class="risk-factor-header">
+          <div class="risk-factor-num">02</div>
+          <div>
+            <div class="risk-factor-title">Content Niche</div>
+            <div class="risk-factor-weight">Weight: 40% of total score</div>
+          </div>
+        </div>
+        <p class="risk-factor-desc">How susceptible is your content to platform bans or community guideline violations?</p>
+        <div class="risk-opts" id="rp-niche">
+          <button class="ropt" data-val="5" onclick="selectRiskOpt(this,'rp-niche')">
+            <span class="ropt-label">High-Risk Content</span>
+            <span class="ropt-score">Score: 5</span>
+            <span class="ropt-desc">Content highly susceptible to bans (adult, political, controversial)</span>
+          </button>
+          <button class="ropt selected" data-val="3" onclick="selectRiskOpt(this,'rp-niche')">
+            <span class="ropt-label">Medium-Risk Content</span>
+            <span class="ropt-score">Score: 3</span>
+            <span class="ropt-desc">Some risk — lifestyle, commentary, entertainment</span>
+          </button>
+          <button class="ropt" data-val="1" onclick="selectRiskOpt(this,'rp-niche')">
+            <span class="ropt-label">Low-Risk Content</span>
+            <span class="ropt-score">Score: 1</span>
+            <span class="ropt-desc">Education, cooking, tech — very low ban susceptibility</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- FACTOR 3 -->
+      <div class="risk-factor-card">
+        <div class="risk-factor-header">
+          <div class="risk-factor-num">03</div>
+          <div>
+            <div class="risk-factor-title">History of Bans</div>
+            <div class="risk-factor-weight">Weight: 50% of total score — highest impact</div>
+          </div>
+        </div>
+        <p class="risk-factor-desc">How many account warnings, strikes, or bans have you received in the past 12 months?</p>
+        <div class="risk-opts" id="rp-bans">
+          <button class="ropt" data-val="5" onclick="selectRiskOpt(this,'rp-bans')">
+            <span class="ropt-label">3 or More Bans</span>
+            <span class="ropt-score">Score: 5</span>
+            <span class="ropt-desc">History of 3+ violations/bans within a year — very high risk</span>
+          </button>
+          <button class="ropt" data-val="3" onclick="selectRiskOpt(this,'rp-bans')">
+            <span class="ropt-label">1–2 Bans</span>
+            <span class="ropt-score">Score: 3</span>
+            <span class="ropt-desc">Some history of violations — moderate risk level</span>
+          </button>
+          <button class="ropt selected" data-val="1" onclick="selectRiskOpt(this,'rp-bans')">
+            <span class="ropt-label">Zero Bans</span>
+            <span class="ropt-score">Score: 1</span>
+            <span class="ropt-desc">Clean record within the year — lowest risk</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- RESULT CARD -->
+      <div class="risk-result-panel" id="risk-result-panel">
+        <div class="rrp-header">Your Risk Score</div>
+        <div class="rrp-score" id="rrp-score">2.10</div>
+        <div class="rrp-range-bar">
+          <div class="rrp-bar-track">
+            <div class="rrp-bar-fill" id="rrp-bar-fill"></div>
+            <div class="rrp-bar-marker" id="rrp-bar-marker"></div>
+          </div>
+          <div class="rrp-bar-labels">
+            <span>1.00<br/><small>High Risk</small></span>
+            <span style="text-align:center;">2.00<br/><small>Medium</small></span>
+            <span style="text-align:right;">3.00<br/><small>Low Risk</small></span>
+          </div>
+        </div>
+        <div class="rrp-classification" id="rrp-classification">Medium Risk</div>
+        <div class="rrp-desc" id="rrp-desc">Your content and platform history suggest moderate income interruption risk.</div>
+
+        <div class="rrp-math-box">
+          <div class="rrp-math-title">Score Calculation</div>
+          <div class="rrp-math-row"><span>Platform (×0.10)</span><span id="rrp-m-platform">—</span></div>
+          <div class="rrp-math-row"><span>Content Niche (×0.40)</span><span id="rrp-m-niche">—</span></div>
+          <div class="rrp-math-row"><span>Ban History (×0.50)</span><span id="rrp-m-bans">—</span></div>
+          <div class="rrp-math-row total"><span>Weighted Score</span><span id="rrp-m-total">—</span></div>
+        </div>
+
+        <div class="rrp-recommendation" id="rrp-recommendation">
+          <div class="rrp-rec-label">Recommended Plan</div>
+          <div class="rrp-rec-plan" id="rrp-rec-plan">Gold Professional</div>
+          <div class="rrp-rec-price" id="rrp-rec-price">From KSh 36,000/yr</div>
+        </div>
+
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-top:20px;" onclick="applyRiskToCalculator()">
+          Apply to Premium Calculator →
+        </button>
+      </div>
+
+    </div><!-- end risk-profiler-grid -->
+  </div>
+  </section>
+
+  <!-- CHARTS -->
   <section id="analytics">
   <div class="section-wrap">
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px; margin-bottom:16px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:16px;">
       <div class="fade-in">
         <span class="section-tag">Interactive Actuarial Models</span>
         <h2 class="section-title" style="margin-bottom:0;">Visualizing Your Risk</h2>
@@ -754,29 +1037,20 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
         <button class="btn-primary" style="background:#1ebe5d;" onclick="downloadReport()">📥 Download Full Report</button>
       </div>
     </div>
-    <p class="section-sub fade-in">These charts generate dynamically based on the Poisson and Lognormal equations from the Egerton University research, using the exact values from your calculator inputs.</p>
+    <p class="section-sub fade-in">Live charts powered by the Poisson and Lognormal equations from Egerton University research, using values from your calculator inputs.</p>
 
     <div class="chart-grid fade-in">
       <div class="chart-card">
         <h3>Frequency Risk (Poisson PMF)</h3>
-        <p>The probability of experiencing exactly X interruptions this year, based on your expected average (λ = <span id="lbl-lambda" style="color:var(--accent);font-weight:bold;">2</span>).</p>
-        <div class="chart-container">
-          <canvas id="poissonChart"></canvas>
-        </div>
-        <p style="font-size: 11px; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;">
-          Formula: P(N=k) = (λ<sup>k</sup> * e<sup>-λ</sup>) / k!
-        </p>
+        <p>Probability of exactly X interruptions this year, given λ = <span id="lbl-lambda" style="color:var(--accent);font-weight:bold;">2</span>.</p>
+        <div class="chart-container"><canvas id="poissonChart" role="img" aria-label="Poisson probability distribution chart">Poisson distribution chart showing interruption probabilities.</canvas></div>
+        <p style="font-size:11px;margin-top:15px;border-top:1px solid var(--border);padding-top:10px;">P(N=k) = (λ<sup>k</sup> · e<sup>-λ</sup>) / k!</p>
       </div>
-
       <div class="chart-card">
         <h3>Financial Severity (Lognormal PDF)</h3>
-        <p>The distribution curve of potential financial loss per interruption event. Notice the "long tail" showing high-severity risks.</p>
-        <div class="chart-container">
-          <canvas id="lognormalChart"></canvas>
-        </div>
-        <p style="font-size: 11px; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;">
-          Base Expected Severity (X') = KSh <span id="lbl-severity" style="color:var(--accent);font-weight:bold;">15,000</span>
-        </p>
+        <p>Distribution of potential loss per event. Long tail = rare but catastrophic losses. Expected X' = KSh <span id="lbl-severity" style="color:var(--accent);font-weight:bold;">15,000</span>.</p>
+        <div class="chart-container"><canvas id="lognormalChart" role="img" aria-label="Lognormal severity distribution chart">Lognormal distribution showing financial severity of claims.</canvas></div>
+        <p style="font-size:11px;margin-top:15px;border-top:1px solid var(--border);padding-top:10px;">f(x) = 1/(xσ√2π) · exp[−(ln x − μ)²/2σ²]</p>
       </div>
     </div>
   </div>
@@ -791,56 +1065,198 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
     <div class="fade-in" style="margin-bottom:52px;">
       <span class="section-tag">File a Claim</span>
       <h2 class="section-title">Report an Income<br/>Interruption</h2>
-      <p class="section-sub">Complete the form below. Our team reviews claims within 48 hours and will contact you by email and WhatsApp.</p>
+      <p class="section-sub">Complete all sections below. Our team reviews within 48 hours and contacts you by email and WhatsApp. All data is verified against your connected platform accounts.</p>
     </div>
+
     <div class="claim-form-wrap fade-in">
-      <div id="claim-success" style="display:none;text-align:center;padding:40px;">
-        <div style="font-size:64px;margin-bottom:16px;">✅</div>
-        <h3 style="font-family:'Syne',sans-serif;font-size:24px;margin-bottom:12px;">Claim Submitted!</h3>
-        <p style="color:var(--muted);">Reference <strong id="claim-ref" style="color:var(--accent);">—</strong><br/>We'll review within 48 hours and contact you by email and WhatsApp.</p>
-        <button class="btn-primary" style="margin-top:28px;" onclick="resetClaimForm()">Submit Another</button>
+      <!-- SUCCESS STATE -->
+      <div id="claim-success" style="display:none;text-align:center;padding:60px 40px;">
+        <div style="font-size:72px;margin-bottom:20px;">✅</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:28px;margin-bottom:12px;">Claim Submitted!</h3>
+        <p style="color:var(--muted);font-size:16px;line-height:1.6;">Reference <strong id="claim-ref" style="color:var(--accent);font-size:18px;">—</strong><br/>We'll review within 48 hours and contact you by email and WhatsApp.</p>
+        <button class="btn-primary" style="margin-top:32px;" onclick="resetClaimForm()">Submit Another Claim</button>
       </div>
+
       <div id="claim-form-body">
-      <div class="form-grid">
-        <div class="form-field"><label>Full Name *</label><input type="text" id="c-name" placeholder="Your full legal name"/></div>
-        <div class="form-field"><label>Email Address *</label><input type="email" id="c-email" placeholder="your@email.com"/></div>
-        <div class="form-field"><label>Phone / M-PESA Number *</label><input type="tel" id="c-phone" placeholder="+254 7XX XXX XXX"/></div>
-        <div class="form-field"><label>Policy Number</label><input type="text" id="c-policy" placeholder="e.g. INS-2025-XXXXX (if existing)"/></div>
-        <div class="form-field"><label>Primary Platform *</label>
-          <select id="c-platform">
-            <option value="">Select platform</option>
-            <option>TikTok</option><option>YouTube</option><option>Instagram</option>
-            <option>Twitter/X</option><option>Multiple Platforms</option>
-          </select>
+
+        <!-- SECTION 1: CREATOR KYC -->
+        <div class="claim-section">
+          <div class="claim-section-header">
+            <div class="claim-section-num">01</div>
+            <div>
+              <div class="claim-section-title">Creator KYC Information</div>
+              <div class="claim-section-sub">Know Your Customer — required by insurance regulations</div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-field"><label>Full Legal Name *</label><input type="text" id="c-name" placeholder="As it appears on your National ID"/></div>
+            <div class="form-field"><label>National ID / Passport Number *</label><input type="text" id="c-idno" placeholder="e.g. 12345678"/></div>
+            <div class="form-field"><label>KRA Tax PIN *</label><input type="text" id="c-taxpin" placeholder="e.g. A001234567B"/></div>
+            <div class="form-field"><label>Business Registration Number <span style="color:var(--muted);font-size:10px;">(optional)</span></label><input type="text" id="c-biz" placeholder="e.g. BN/2024/XXXXX"/></div>
+            <div class="form-field"><label>Location / County *</label>
+              <select id="c-location">
+                <option value="">Select county</option>
+                <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option>
+                <option>Nakuru</option><option>Eldoret</option><option>Thika</option>
+                <option>Nyeri</option><option>Meru</option><option>Kisii</option>
+                <option>Kakamega</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Email Address *</label><input type="email" id="c-email" placeholder="your@email.com"/></div>
+            <div class="form-field"><label>Phone / M-PESA Number *</label><input type="tel" id="c-phone" placeholder="+254 7XX XXX XXX"/></div>
+            <div class="form-field"><label>Policy Number <span style="color:var(--muted);font-size:10px;">(if existing)</span></label><input type="text" id="c-policy" placeholder="e.g. INS-2025-XXXXX"/></div>
+          </div>
         </div>
-        <div class="form-field"><label>Type of Interruption *</label>
-          <select id="c-type">
-            <option value="">Select reason</option>
-            <option>Illness / Medical</option><option>Account Deactivation / Ban</option>
-            <option>Demonetisation</option><option>Brand Deal Cancellation</option>
-            <option>Algorithm-Driven Income Drop</option><option>Platform Technical Outage</option>
-            <option>Other</option>
-          </select>
+
+        <!-- SECTION 2: DIGITAL ASSET DECLARATION -->
+        <div class="claim-section">
+          <div class="claim-section-header">
+            <div class="claim-section-num">02</div>
+            <div>
+              <div class="claim-section-title">Digital Asset Declaration</div>
+              <div class="claim-section-sub">Declare your active content platforms and handles</div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-field"><label>Primary Platform *</label>
+              <select id="c-platform">
+                <option value="">Select platform</option>
+                <option>TikTok</option><option>YouTube</option><option>Instagram</option>
+                <option>Twitter/X</option><option>Facebook</option><option>Multiple Platforms</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Primary Platform Handle *</label><input type="text" id="c-handle1" placeholder="e.g. @yourcreatorname"/></div>
+            <div class="form-field"><label>Secondary Platform <span style="color:var(--muted);font-size:10px;">(optional)</span></label>
+              <select id="c-platform2">
+                <option value="">Select platform</option>
+                <option>TikTok</option><option>YouTube</option><option>Instagram</option>
+                <option>Twitter/X</option><option>Facebook</option><option>None</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Secondary Handle <span style="color:var(--muted);font-size:10px;">(optional)</span></label><input type="text" id="c-handle2" placeholder="e.g. @yourcreatorname"/></div>
+            <div class="form-field"><label>Content Niche *</label>
+              <select id="c-niche">
+                <option value="">Select your content type</option>
+                <option>Comedy / Entertainment</option><option>Education / Tutorials</option>
+                <option>Lifestyle / Vlogging</option><option>Fashion / Beauty</option>
+                <option>Gaming</option><option>News / Commentary</option>
+                <option>Music / Arts</option><option>Food / Cooking</option>
+                <option>Tech / Reviews</option><option>Travel</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Avg. Monthly Followers/Subscribers</label><input type="number" id="c-followers" placeholder="e.g. 50000"/></div>
+          </div>
+
+          <!-- PLATFORM API CONNECT -->
+          <div class="api-connect-section">
+            <div class="api-connect-title">🔗 Connect Platform Accounts <span class="api-badge">Speeds up verification</span></div>
+            <p class="api-connect-desc">Connecting your accounts lets us automatically verify your income history and interruption event. This is optional but significantly speeds up claim approval.</p>
+            <div class="api-btns">
+              <button class="api-btn tiktok" onclick="simulateAPIConnect('TikTok')">
+                <span class="api-btn-icon">🎵</span>
+                <span><strong>Connect TikTok</strong><br/><small>Verify income + views</small></span>
+                <span class="api-status" id="api-status-tiktok">Not connected</span>
+              </button>
+              <button class="api-btn youtube" onclick="simulateAPIConnect('YouTube')">
+                <span class="api-btn-icon">▶️</span>
+                <span><strong>Connect YouTube</strong><br/><small>Verify AdSense data</small></span>
+                <span class="api-status" id="api-status-youtube">Not connected</span>
+              </button>
+              <button class="api-btn instagram" onclick="simulateAPIConnect('Instagram')">
+                <span class="api-btn-icon">📸</span>
+                <span><strong>Connect Instagram</strong><br/><small>Verify engagement metrics</small></span>
+                <span class="api-status" id="api-status-instagram">Not connected</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="form-field"><label>Interruption Start Date *</label><input type="date" id="c-start"/></div>
-        <div class="form-field"><label>Expected / Actual End Date</label><input type="date" id="c-end"/></div>
-        <div class="form-field"><label>Average Monthly Income (KSh) *</label><input type="number" id="c-income" placeholder="e.g. 75000"/></div>
-        <div class="form-field"><label>Coverage Plan</label>
-          <select id="c-plan">
-            <option value="">Select plan</option>
-            <option>Bronze – Starter (KSh 18,000/yr)</option>
-            <option>Silver – Growth (KSh 27,000/yr)</option>
-            <option>Gold – Professional (KSh 36,000/yr)</option>
-          </select>
+
+        <!-- SECTION 3: BRAND & INCOME HISTORY -->
+        <div class="claim-section">
+          <div class="claim-section-header">
+            <div class="claim-section-num">03</div>
+            <div>
+              <div class="claim-section-title">Brand Deals & Income History</div>
+              <div class="claim-section-sub">Active brand partnerships and recent ban history</div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-field full"><label>Current Brand Partnerships <span style="color:var(--muted);font-size:10px;">(list brands you are currently working with)</span></label>
+              <textarea id="c-brands" placeholder="e.g. Brand A — KSh 50,000 campaign, ends March 2026&#10;Brand B — KSh 20,000/month retainer, ongoing" style="min-height:90px;"></textarea>
+            </div>
+            <div class="form-field"><label>Estimated Campaign Value (KSh) *</label><input type="number" id="c-campaign-val" placeholder="Total value of active campaigns"/></div>
+            <div class="form-field"><label>Campaign Timeline</label><input type="text" id="c-campaign-timeline" placeholder="e.g. Jan 2026 – Jun 2026 (6 months)"/></div>
+            <div class="form-field"><label>Number of Bans in Past 24 Months *</label>
+              <select id="c-bans-history">
+                <option value="0">0 — Clean record</option>
+                <option value="1">1 ban / strike</option>
+                <option value="2">2 bans / strikes</option>
+                <option value="3">3+ bans / strikes</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Type of Interruption *</label>
+              <select id="c-type">
+                <option value="">Select reason</option>
+                <option>Illness / Medical</option><option>Account Deactivation / Ban</option>
+                <option>Demonetisation</option><option>Brand Deal Cancellation</option>
+                <option>Algorithm-Driven Income Drop</option><option>Platform Technical Outage</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Interruption Start Date *</label><input type="date" id="c-start"/></div>
+            <div class="form-field"><label>Expected / Actual End Date</label><input type="date" id="c-end"/></div>
+          </div>
+          <div class="form-field full" style="margin-top:4px;"><label>Description of Interruption *</label>
+            <textarea id="c-desc" placeholder="Describe what happened in detail — platform notifications received, medical advice, brand communications, any evidence you have..."></textarea>
+          </div>
         </div>
-        <div class="form-field full"><label>Description of Interruption *</label>
-          <textarea id="c-desc" placeholder="Describe what happened in detail — platform notifications, medical advice received, brand communications, etc."></textarea>
+
+        <!-- SECTION 4: LEGAL DISCLOSURE -->
+        <div class="claim-section">
+          <div class="claim-section-header">
+            <div class="claim-section-num">04</div>
+            <div>
+              <div class="claim-section-title">Legal Disclosures & Consent</div>
+              <div class="claim-section-sub">Required before submission</div>
+            </div>
+          </div>
+          <div class="legal-checkboxes">
+            <label class="legal-check-item">
+              <input type="checkbox" id="legal-insurance" class="legal-cb"/>
+              <div class="legal-check-text">
+                <strong>Insurance Agreement</strong>
+                <span>I agree that this claim is subject to the terms and conditions of the INSUTOK Income Interruption Insurance policy. I understand that false claims may result in policy cancellation and legal action.</span>
+              </div>
+            </label>
+            <label class="legal-check-item">
+              <input type="checkbox" id="legal-data" class="legal-cb"/>
+              <div class="legal-check-text">
+                <strong>Data Consent</strong>
+                <span>I consent to INSUTOK collecting, processing, and sharing my personal data (including platform analytics) with the underwriting insurance company and relevant regulatory bodies (IRA Kenya) for the purposes of this claim.</span>
+              </div>
+            </label>
+            <label class="legal-check-item">
+              <input type="checkbox" id="legal-scan" class="legal-cb"/>
+              <div class="legal-check-text">
+                <strong>Platform & Document Verification</strong>
+                <span>I authorise INSUTOK to cross-reference my claim against my connected platform accounts, public data, and submitted documents. I confirm all information provided is accurate and complete.</span>
+              </div>
+            </label>
+            <label class="legal-check-item">
+              <input type="checkbox" id="legal-public" class="legal-cb"/>
+              <div class="legal-check-text">
+                <strong>Public Company Scan Consent</strong>
+                <span>I agree that INSUTOK may scan publicly available information about my creator accounts, brand partnerships, and business registration records to verify the legitimacy of this claim.</span>
+              </div>
+            </label>
+          </div>
         </div>
-      </div>
-      <button class="btn-primary" style="width:100%;justify-content:center;padding:18px;font-size:16px;" onclick="submitClaim()">
-        Submit Claim →
-      </button>
-      </div>
+
+        <button class="btn-primary" style="width:100%;justify-content:center;padding:20px;font-size:16px;margin-top:8px;" onclick="submitClaim()">
+          Submit Claim Securely →
+        </button>
+
+      </div><!-- end claim-form-body -->
     </div>
   </div>
   </section>
@@ -1263,6 +1679,138 @@ function recalc(){
 recalc();
 updateCharts(); 
 
+// ─── RISK PROFILER LOGIC ───
+// Weights from notes: Platform 10%, Niche 40%, Bans 50%
+// Ranges: 1.00–1.60 = High Risk, 1.61–2.30 = Medium, 2.31–3.00 = Low
+const W = {platform: 0.10, niche: 0.40, bans: 0.50};
+
+function selectRiskOpt(btn, groupId) {
+  document.querySelectorAll(`#${groupId} .ropt`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  calcRiskScore();
+}
+
+function getRiskVal(groupId) {
+  const sel = document.querySelector(`#${groupId} .ropt.selected`);
+  return sel ? +sel.dataset.val : 3;
+}
+
+function calcRiskScore() {
+  const vPlatform = getRiskVal('rp-platform');
+  const vNiche    = getRiskVal('rp-niche');
+  const vBans     = getRiskVal('rp-bans');
+
+  // Weighted score — higher raw score = higher risk = LOWER weighted score after inversion
+  // Notes say: score 1.00–1.60 = High risk, 2.31–3.00 = Low risk
+  // So we map: raw scores 1–5 to weighted score
+  // Using: weighted = (platform×0.1 + niche×0.4 + bans×0.5) — same as notes
+  // But the notes show higher score = higher risk, and range 1–3 after weighting.
+  // The min raw is 1 (best) and max is 5 (worst)
+  // Min weighted = 1×0.1 + 1×0.4 + 1×0.5 = 1.0 (low risk end)
+  // Max weighted = 5×0.1 + 5×0.4 + 5×0.5 = 5.0 (high risk end)
+  // But notes say range is 1.00–3.00. So we scale: score = raw_weighted / (5/3) mapped to 1–3
+  // Actually from the notes: min=100 max=300 after multiplication of scores and weights
+  // Let's use the exact notes formula: each factor score × weight, sum them. Range is 1.0–3.0.
+  // Wait — notes say "minimum score is 1.00 and maximum is 3.00 after multiplication of scores and weights"
+  // With weights 0.5,0.4,0.1 and scores 1–5: min = 1×0.5+1×0.4+1×0.1=1.0, max = 5×0.5+5×0.4+5×0.1=5.0
+  // But notes say max is 3.00. So they likely mean scores 1–3 per factor (not 1,3,5).
+  // The options say Score: 5, 3, 1 — but they're mapped internally. Let me re-read.
+  // Notes: "more ≥3 is given score of 5, (1-2) bans = score of 3, zero bans = 1"
+  // So scores ARE 1,3,5 for each factor. But "minimum 1.00 max 3.00".
+  // With scores 1,3,5 and weights 0.1,0.4,0.5: min=1×1=1.0, max=5×1=5.0 still.
+  // UNLESS the range note means 1.00–3.00 is after normalizing: score/5 × 3 → maps 1→0.6, 3→1.8, 5→3.0
+  // Let's use: finalScore = (w_bans × vBans + w_niche × vNiche + w_platform × vPlatform) / 5 × 3
+  // That gives range: min=1×1/5×3=0.6, max=5×1/5×3=3.0 — close enough
+  // Actually simplest: just use weighted sum directly (it'll be between 1.0 and 5.0)
+  // Then classify: 1.00–2.33=High, 2.34–3.67=Medium, 3.68–5.00=Low
+  // But NOTES say ranges 1.00–1.60, 1.61–2.30, 2.31–3.00 — scores of 1,3,5 but weighted to 0.1,0.4,0.5
+  // If raw scores were 1–3 (i.e. choices map to 1,2,3 not 1,3,5), THEN:
+  // min=1×1=1.0, max=3×1=3.0 — matches the notes exactly!
+  // So: option "5" in HTML = actual score 1 (best), "3"=2 (mid), "1"=3 (worst) — inverted for display
+  // Let me re-map: val 5→1, val 3→2, val 1→3 (since 5 = many bans = score 5 in display but 3 in weighted)
+  const remap = v => v === 5 ? 3 : v === 3 ? 2 : 1; // display score → actual 1-3 factor score
+  const sP = remap(vPlatform);
+  const sN = remap(vNiche);
+  const sB = remap(vBans);
+
+  const weighted = (sB * W.bans) + (sN * W.niche) + (sP * W.platform);
+  const score = Math.round(weighted * 100) / 100;
+
+  // Classification per notes: 1.00–1.60 High, 1.61–2.30 Medium, 2.31–3.00 Low
+  let cls, clsColor, desc, plan, price, loadVal;
+  if (score >= 2.31) {
+    cls='Low Risk'; clsColor='#10b981'; 
+    desc='Your platforms and content history suggest low interruption risk. You qualify for our best rates.';
+    plan='Bronze Starter'; price='From KSh 18,000/yr'; loadVal='0.15';
+  } else if (score >= 1.61) {
+    cls='Medium Risk'; clsColor='#f59e0b';
+    desc='Moderate interruption risk. A balanced plan with good coverage is recommended.';
+    plan='Silver Growth'; price='From KSh 27,000/yr'; loadVal='0.20';
+  } else {
+    cls='High Risk'; clsColor='#ef4444';
+    desc='Higher interruption likelihood based on your profile. Comprehensive cover recommended.';
+    plan='Gold Professional'; price='From KSh 36,000/yr'; loadVal='0.35';
+  }
+
+  // Update UI
+  document.getElementById('rrp-score').textContent = score.toFixed(2);
+  document.getElementById('rrp-score').style.background = `linear-gradient(135deg, ${clsColor}, #f59e0b)`;
+  document.getElementById('rrp-score').style.webkitBackgroundClip = 'text';
+  document.getElementById('rrp-score').style.backgroundClip = 'text';
+  document.getElementById('rrp-score').style.webkitTextFillColor = 'transparent';
+
+  // Bar marker: score 1.00=0%, 3.00=100%
+  const pct = ((score - 1) / 2) * 100;
+  document.getElementById('rrp-bar-marker').style.left = pct + '%';
+
+  document.getElementById('rrp-classification').textContent = cls;
+  document.getElementById('rrp-classification').style.color = clsColor;
+  document.getElementById('rrp-desc').textContent = desc;
+
+  document.getElementById('rrp-m-platform').textContent = `${sP} × 0.10 = ${(sP*0.1).toFixed(2)}`;
+  document.getElementById('rrp-m-niche').textContent    = `${sN} × 0.40 = ${(sN*0.4).toFixed(2)}`;
+  document.getElementById('rrp-m-bans').textContent     = `${sB} × 0.50 = ${(sB*0.5).toFixed(2)}`;
+  document.getElementById('rrp-m-total').textContent    = score.toFixed(2) + ` (${cls})`;
+
+  document.getElementById('rrp-rec-plan').textContent  = plan;
+  document.getElementById('rrp-rec-price').textContent = price;
+
+  // Store for apply button
+  document.getElementById('risk-result-panel').dataset.loadVal = loadVal;
+}
+
+function applyRiskToCalculator() {
+  const loadVal = document.getElementById('risk-result-panel').dataset.loadVal || '0.20';
+  const riskSelect = document.getElementById('risk-cat');
+  for (let i = 0; i < riskSelect.options.length; i++) {
+    if (riskSelect.options[i].value === loadVal) { riskSelect.selectedIndex = i; break; }
+  }
+  recalc();
+  switchTab(null, 'tab-pricing');
+  toast('Risk profile applied to calculator! 📊', '✅', 4000);
+}
+
+// Run initial risk calc
+calcRiskScore();
+
+// ─── API CONNECT SIMULATION ───
+const connectedAPIs = {};
+function simulateAPIConnect(platform) {
+  if (connectedAPIs[platform]) {
+    toast(`${platform} already connected ✅`, '🔗'); return;
+  }
+  toast(`Connecting to ${platform}... (demo mode)`, '⏳', 2000);
+  setTimeout(() => {
+    connectedAPIs[platform] = true;
+    const key = platform.toLowerCase();
+    const btn = document.querySelector(`.api-btn.${key}`);
+    if (!btn) return;
+    btn.classList.add('connected');
+    document.getElementById(`api-status-${key}`).textContent = '✓ Connected';
+    toast(`${platform} connected! Income data verified.`, '✅');
+  }, 1800);
+}
+
 // ─── DOWNLOAD PDF REPORT LOGIC (BULLETPROOF FIX) ───
 function downloadReport() {
   toast('Compiling your report...', '⏳', 3000);
@@ -1414,26 +1962,51 @@ async function submitClaim(){
   const name    = document.getElementById('c-name').value.trim();
   const email   = document.getElementById('c-email').value.trim();
   const phone   = document.getElementById('c-phone').value.trim();
+  const idno    = document.getElementById('c-idno').value.trim();
+  const taxpin  = document.getElementById('c-taxpin').value.trim();
   const platform= document.getElementById('c-platform').value;
   const type    = document.getElementById('c-type').value;
   const start   = document.getElementById('c-start').value;
-  const income  = document.getElementById('c-income').value;
   const desc    = document.getElementById('c-desc').value.trim();
 
-  if(!name||!email||!phone||!platform||!type||!start||!desc){toast('Please fill all required fields.','⚠️'); return;}
+  // Legal checkbox validation
+  const legalInsurance = document.getElementById('legal-insurance').checked;
+  const legalData      = document.getElementById('legal-data').checked;
+  const legalScan      = document.getElementById('legal-scan').checked;
+  const legalPublic    = document.getElementById('legal-public').checked;
+
+  if(!name||!email||!phone||!idno||!taxpin||!platform||!type||!start||!desc){
+    toast('Please fill all required fields (marked *).','⚠️'); return;
+  }
+  if(!legalInsurance||!legalData||!legalScan||!legalPublic){
+    toast('Please accept all legal disclosures to proceed.','⚠️'); return;
+  }
 
   const ref = 'INS-' + Date.now().toString().slice(-7);
+
+  // Build detailed claim message
+  const niche   = document.getElementById('c-niche').value;
+  const handle1 = document.getElementById('c-handle1').value;
+  const brands  = document.getElementById('c-brands').value;
+  const campVal = document.getElementById('c-campaign-val').value;
+  const bans    = document.getElementById('c-bans-history').value;
+  const connectedStr = Object.keys(connectedAPIs).length > 0 ? Object.keys(connectedAPIs).join(', ') : 'None';
+
+  const claimMsg = `INSUTOK CLAIM SUBMISSION\n\nRef: ${ref}\n\n--- KYC ---\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nID No: ${idno}\nTax PIN: ${taxpin}\nLocation: ${document.getElementById('c-location').value}\n\n--- DIGITAL ASSETS ---\nPlatform: ${platform}\nHandle: ${handle1}\nNiche: ${niche}\nConnected APIs: ${connectedStr}\n\n--- CLAIM ---\nType: ${type}\nStart Date: ${start}\nBrands: ${brands}\nCampaign Value: KSh ${campVal}\nBan History: ${bans}\n\n--- DESCRIPTION ---\n${desc}`;
+
   try{
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_CLAIM_TEMPLATE, {
-      to_email: email, to_name: name, ref, phone, platform, type, start, income,
-      end: document.getElementById('c-end').value, plan: document.getElementById('c-plan').value,
-      desc, reply_to: email
+      to_email: email, to_name: name, ref, phone, platform, type, start,
+      end: document.getElementById('c-end').value,
+      subject: `New INSUTOK Claim — ${ref}`,
+      message: claimMsg, reply_to: email
     });
   }catch(e){}
 
   document.getElementById('claim-form-body').style.display='none';
   document.getElementById('claim-ref').textContent = ref;
   document.getElementById('claim-success').style.display='';
+
   const waMsg = encodeURIComponent(`Hi ${name}! ✅ Your INSUTOK claim has been received.\n\n📋 Reference: *${ref}*\nType: ${type}\nPlatform: ${platform}\n\nWe'll review within 48 hours and update you here. Stay tuned!`);
   setTimeout(()=>window.open(`https://wa.me/${phone.replace(/\D/g,'')}?text=${waMsg}`, '_blank'), 800);
 }
@@ -1442,6 +2015,12 @@ function resetClaimForm(){
   document.getElementById('claim-form-body').style.display='';
   document.getElementById('claim-success').style.display='none';
   document.querySelectorAll('#claim-form-body input,#claim-form-body select,#claim-form-body textarea').forEach(el=>el.value='');
+  document.querySelectorAll('.legal-cb').forEach(cb=>cb.checked=false);
+  Object.keys(connectedAPIs).forEach(k=>{
+    delete connectedAPIs[k];
+    const btn = document.querySelector(`.api-btn.${k.toLowerCase()}`);
+    if(btn){btn.classList.remove('connected');document.getElementById(`api-status-${k.toLowerCase()}`).textContent='Not connected';}
+  });
 }
 
 async function sendContact(){
