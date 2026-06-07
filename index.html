@@ -604,7 +604,7 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 #auth-screen{
   position:fixed;inset:0;z-index:9000;
   background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
+  display:none;align-items:center;justify-content:center;
   padding:24px;
 }
 .auth-card{
@@ -1936,13 +1936,13 @@ let currentProfile = null;
 // ─── AUTH: INIT ── check if already logged in ───
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    if (!db || !db.auth) throw new Error('Supabase not initialised');
     const { data: { session } } = await db.auth.getSession();
     if (session?.user) {
       currentUser = session.user;
       await onLoggedIn(currentUser);
-    } else {
-      showAuthScreen();
     }
+    // If no session, just show the app in guest/demo mode — no forced login
     db.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         currentUser = session.user;
@@ -1950,8 +1950,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   } catch(e) {
-    console.warn('Auth init failed:', e);
-    showAuthScreen();
+    console.warn('Auth init skipped (demo mode):', e);
+    // App loads normally in demo mode — login available via nav button
   }
 });
 
@@ -2259,7 +2259,7 @@ function switchTab(e, tabId) {
 }
 
 // ─── EMAILJS INIT ───
-(function(){emailjs.init({publicKey:"YOUR_EMAILJS_PUBLIC_KEY"});})();
+(function(){ try{ if(typeof emailjs!=="undefined" && emailjs.init) emailjs.init({publicKey:"YOUR_EMAILJS_PUBLIC_KEY"}); }catch(e){ console.warn("EmailJS not configured — email features disabled."); } })();
 const EMAILJS_SERVICE_ID = "service_8bxr2xd";
 const EMAILJS_WAITLIST_TEMPLATE = "template_55i5bro";
 const EMAILJS_CLAIM_TEMPLATE = "template_55i5bro";
