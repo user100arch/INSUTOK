@@ -12,7 +12,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
 
 <style>
 :root {
@@ -604,7 +603,7 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 #auth-screen{
   position:fixed;inset:0;z-index:9000;
   background:var(--bg);
-  display:none;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   padding:24px;
 }
 .auth-card{
@@ -1906,52 +1905,109 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 //
 // 5. Replace the two values below with your real keys:
 // ────────────────────────────────────────────────────
-const SUPABASE_URL  = 'https://xoclnztwahmmyvxsyedq.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvY2xuenR3YWhtbXl2eHN5ZWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzMwMDQsImV4cCI6MjA5NjQwOTAwNH0.tCvHqIYxttSj3QjpePqrKYq8daSF0-IGJtGrKUv3VZ8';
+// ══════════════════════════════════════════════════════
+// SUPABASE — pure fetch, no external library needed
+// ══════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://xoclnztwahmmyvxsyedq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvY2xuenR3YWhtbXl2eHN5ZWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzMwMDQsImV4cCI6MjA5NjQwOTAwNH0.tCvHqIYxttSj3QjpePqrKYq8daSF0-IGJtGrKUv3VZ8';
 
-// Safe init — works whether Supabase loads as window.supabase or supabase global
-let db;
-try {
-  const _sb = window.supabase || window.Supabase;
-  db = _sb.createClient(SUPABASE_URL, SUPABASE_KEY);
-} catch(e) {
-  console.warn('Supabase init error:', e);
-  // Stub so the rest of the app doesn't crash
-  db = {
-    auth: {
-      getSession: async()=>({data:{session:null}}),
-      signUp: async()=>({data:null,error:{message:'Database not available. Please check your connection.'}}),
-      signInWithPassword: async()=>({data:null,error:{message:'Database not available. Please check your connection.'}}),
-      signOut: async()=>({}),
-      resetPasswordForEmail: async()=>({error:null}),
-      onAuthStateChange: ()=>{}
-    },
-    from: ()=>({ select:()=>({ eq:()=>({ single:async()=>({data:null,error:'no db'}) }) }), upsert:async()=>({error:null}) })
-  };
+let currentUser  = null;
+let currentProfile = null;
+let _accessToken = null;
+
+// ── helpers ──────────────────────────────────────────
+function authHeaders(extra) {
+  const h = { 'Content-Type':'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + (_accessToken || SUPABASE_KEY) };
+  return Object.assign(h, extra||{});
 }
 
-let currentUser = null;
-let currentProfile = null;
+// ── AUTH calls via Supabase REST ──────────────────────
+const Auth = {
+  async signUp(email, password, fullName) {
+    const r = await fetch(SUPABASE_URL+'/auth/v1/signup', {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ email, password, data:{ full_name: fullName } })
+    });
+    return r.json();
+  },
+  async signIn(email, password) {
+    const r = await fetch(SUPABASE_URL+'/auth/v1/token?grant_type=password', {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ email, password })
+    });
+    return r.json();
+  },
+  async signOut() {
+    if (!_accessToken) return;
+    await fetch(SUPABASE_URL+'/auth/v1/logout', {
+      method:'POST', headers: authHeaders()
+    });
+    _accessToken = null;
+    localStorage.removeItem('insutok_token');
+    localStorage.removeItem('insutok_user');
+  },
+  async resetPassword(email) {
+    const r = await fetch(SUPABASE_URL+'/auth/v1/recover', {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ email })
+    });
+    return r.json();
+  }
+};
 
-// ─── AUTH: INIT ── check if already logged in ───
+// ── DB calls via PostgREST ────────────────────────────
+const DB = {
+  async getProfile(userId) {
+    const r = await fetch(SUPABASE_URL+'/rest/v1/profiles?id=eq.'+userId+'&select=*', {
+      headers: authHeaders({ 'Accept':'application/json' })
+    });
+    const data = await r.json();
+    return Array.isArray(data) ? data[0] : null;
+  },
+  async upsertProfile(profile) {
+    const r = await fetch(SUPABASE_URL+'/rest/v1/profiles', {
+      method:'POST',
+      headers: authHeaders({
+        'Prefer':'resolution=merge-duplicates,return=representation',
+        'Content-Type':'application/json'
+      }),
+      body: JSON.stringify(profile)
+    });
+    return r.json();
+  }
+};
+
+// ── Session persistence ───────────────────────────────
+function saveSession(token, user) {
+  _accessToken = token;
+  localStorage.setItem('insutok_token', token);
+  localStorage.setItem('insutok_user',  JSON.stringify(user));
+}
+function loadSession() {
+  const token = localStorage.getItem('insutok_token');
+  const user  = localStorage.getItem('insutok_user');
+  if (token && user) { _accessToken = token; return JSON.parse(user); }
+  return null;
+}
+function clearSession() {
+  _accessToken = null;
+  localStorage.removeItem('insutok_token');
+  localStorage.removeItem('insutok_user');
+}
+
+// ── Boot: check existing session ─────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    if (!db || !db.auth) throw new Error('Supabase not initialised');
-    const { data: { session } } = await db.auth.getSession();
-    if (session?.user) {
-      currentUser = session.user;
+    const saved = loadSession();
+    if (saved) {
+      currentUser = saved;
       await onLoggedIn(currentUser);
+    } else {
+      showAuthScreen();
     }
-    // If no session, just show the app in guest/demo mode — no forced login
-    db.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        currentUser = session.user;
-        await onLoggedIn(currentUser);
-      }
-    });
   } catch(e) {
-    console.warn('Auth init skipped (demo mode):', e);
-    // App loads normally in demo mode — login available via nav button
+    console.warn('Session restore failed:', e);
+    showAuthScreen();
   }
 });
 
@@ -1961,209 +2017,172 @@ function showAuthScreen() {
 
 async function onLoggedIn(user) {
   document.getElementById('auth-screen').style.display = 'none';
-  // Update nav
-  const name = user.user_metadata?.full_name || user.email.split('@')[0];
+  currentUser = user;
+  const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Creator';
   const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('nav-login-btn').style.display = 'none';
-  document.getElementById('nav-user-wrap').style.display = 'flex';
-  document.getElementById('nav-avatar').textContent = initials;
-  document.getElementById('nav-user-name').textContent = name.split(' ')[0];
-  // Load profile from DB
-  await loadProfile(user.id);
+  document.getElementById('nav-login-btn').style.display  = 'none';
+  document.getElementById('nav-user-wrap').style.display  = 'flex';
+  document.getElementById('nav-avatar').textContent       = initials;
+  document.getElementById('nav-user-name').textContent    = name.split(' ')[0];
+  try {
+    await loadProfile(user.id);
+  } catch(e) { console.warn('Profile load error:', e); }
 }
 
-// ─── AUTH TABS ───
+// ── AUTH TAB TOGGLE ───────────────────────────────────
 function switchAuthTab(tab) {
   document.getElementById('auth-form-login').style.display    = tab==='login'    ? '' : 'none';
   document.getElementById('auth-form-register').style.display = tab==='register' ? '' : 'none';
-  document.getElementById('auth-tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('auth-tab-login').classList.toggle('active',    tab==='login');
   document.getElementById('auth-tab-register').classList.toggle('active', tab==='register');
   clearAuthMessages();
 }
-
 function showAuthError(msg) {
   const el = document.getElementById('auth-error');
-  el.textContent = msg; el.style.display = 'block';
+  el.textContent = msg; el.style.display='block';
   el.parentElement.classList.add('shake');
   setTimeout(()=>el.parentElement.classList.remove('shake'),400);
-  document.getElementById('auth-success').style.display = 'none';
+  document.getElementById('auth-success').style.display='none';
 }
 function showAuthSuccess(msg) {
-  const el = document.getElementById('auth-success');
-  el.textContent = msg; el.style.display = 'block';
-  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-success').textContent = msg;
+  document.getElementById('auth-success').style.display='block';
+  document.getElementById('auth-error').style.display='none';
 }
 function clearAuthMessages() {
-  document.getElementById('auth-error').style.display = 'none';
-  document.getElementById('auth-success').style.display = 'none';
+  document.getElementById('auth-error').style.display='none';
+  document.getElementById('auth-success').style.display='none';
 }
 
-// ─── REGISTER ───
+// ── REGISTER ─────────────────────────────────────────
 async function handleRegister() {
   const name  = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
   const pw    = document.getElementById('reg-pw').value;
   const pw2   = document.getElementById('reg-pw2').value;
   clearAuthMessages();
-  if (!name || !email || !pw)        { showAuthError('Please fill in all fields.'); return; }
-  if (pw.length < 8)                 { showAuthError('Password must be at least 8 characters.'); return; }
-  if (pw !== pw2)                    { showAuthError('Passwords do not match.'); return; }
-
+  if (!name||!email||!pw)  { showAuthError('Please fill in all fields.'); return; }
+  if (pw.length < 8)        { showAuthError('Password must be at least 8 characters.'); return; }
+  if (pw !== pw2)            { showAuthError('Passwords do not match.'); return; }
   const btn = document.getElementById('register-btn');
-  btn.disabled = true; btn.textContent = 'Creating account...';
-
-  const { data, error } = await db.auth.signUp({
-    email, password: pw,
-    options: { data: { full_name: name } }
-  });
-
-  btn.disabled = false; btn.textContent = 'Create My Account →';
-  if (error) { showAuthError(error.message); return; }
-
-  // Create blank profile row
-  if (data.user) {
-    const policyNum = 'INS-' + Date.now().toString().slice(-7);
-    await db.from('profiles').upsert({
-      id: data.user.id,
-      full_name: name,
-      policy_number: policyNum
-    });
-  }
-  showAuthSuccess('✅ Account created! Check your email to confirm, then log in.');
+  btn.disabled=true; btn.textContent='Creating account...';
+  try {
+    const data = await Auth.signUp(email, pw, name);
+    if (data.error || data.msg) {
+      showAuthError(data.error?.message || data.msg || 'Registration failed.');
+    } else {
+      showAuthSuccess('✅ Account created! Check your email to confirm, then log in.');
+    }
+  } catch(e) { showAuthError('Network error. Please check your connection.'); }
+  btn.disabled=false; btn.textContent='Create My Account →';
 }
 
-// ─── LOGIN ───
+// ── LOGIN ─────────────────────────────────────────────
 async function handleLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw    = document.getElementById('login-pw').value;
   clearAuthMessages();
-  if (!email || !pw) { showAuthError('Please enter your email and password.'); return; }
-
+  if (!email||!pw) { showAuthError('Please enter your email and password.'); return; }
   const btn = document.getElementById('login-btn');
-  btn.disabled = true; btn.textContent = 'Logging in...';
-
-  const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
-  btn.disabled = false; btn.textContent = 'Log In to Portal →';
-  if (error) { showAuthError('Incorrect email or password. Please try again.'); return; }
-  currentUser = data.user;
-  await onLoggedIn(currentUser);
+  btn.disabled=true; btn.textContent='Logging in...';
+  try {
+    const data = await Auth.signIn(email, pw);
+    if (data.error || !data.access_token) {
+      showAuthError('Incorrect email or password. Please try again.');
+    } else {
+      saveSession(data.access_token, data.user);
+      await onLoggedIn(data.user);
+    }
+  } catch(e) { showAuthError('Network error. Please check your connection.'); }
+  btn.disabled=false; btn.textContent='Log In to Portal →';
 }
 
-// ─── FORGOT PASSWORD ───
+// ── FORGOT PASSWORD ───────────────────────────────────
 async function handleForgotPassword() {
   const email = document.getElementById('login-email').value.trim();
-  if (!email) { showAuthError('Enter your email address first, then click Forgot Password.'); return; }
-  const { error } = await db.auth.resetPasswordForEmail(email);
-  if (error) showAuthError(error.message);
-  else showAuthSuccess('✅ Password reset email sent! Check your inbox.');
+  if (!email) { showAuthError('Enter your email address first.'); return; }
+  await Auth.resetPassword(email);
+  showAuthSuccess('✅ Password reset email sent! Check your inbox.');
 }
 
-// ─── LOGOUT ───
+// ── LOGOUT ────────────────────────────────────────────
 async function handleLogout() {
-  await db.auth.signOut();
-  currentUser = null; currentProfile = null;
-  document.getElementById('nav-login-btn').style.display = '';
-  document.getElementById('nav-user-wrap').style.display = 'none';
+  await Auth.signOut();
+  clearSession();
+  currentUser=null; currentProfile=null;
+  document.getElementById('nav-login-btn').style.display='';
+  document.getElementById('nav-user-wrap').style.display='none';
   document.getElementById('nav-dropdown').classList.remove('open');
-  switchTab(null, 'tab-overview');
+  switchTab(null,'tab-overview');
   showAuthScreen();
-  toast('Logged out successfully.', '👋');
+  toast('Logged out successfully.','👋');
 }
 
-// ─── NAV DROPDOWN ───
+// ── NAV DROPDOWN ──────────────────────────────────────
 function toggleNavDropdown() {
   document.getElementById('nav-dropdown').classList.toggle('open');
 }
 document.addEventListener('click', e => {
   const wrap = document.getElementById('nav-user-wrap');
-  if (wrap && !wrap.contains(e.target)) {
-    document.getElementById('nav-dropdown').classList.remove('open');
-  }
+  if (wrap && !wrap.contains(e.target)) document.getElementById('nav-dropdown').classList.remove('open');
 });
 
-// ─── LOAD PROFILE FROM DB ───
+// ── LOAD PROFILE ─────────────────────────────────────
 async function loadProfile(userId) {
-  const { data, error } = await db.from('profiles').select('*').eq('id', userId).single();
-  if (error || !data) return;
+  const data = await DB.getProfile(userId);
+  if (!data) return;
   currentProfile = data;
   populatePortalDashboard(data);
-  // Also pre-fill the claims form
   prefillClaimsFromProfile(data);
 }
 
+// ── POPULATE DASHBOARD ───────────────────────────────
 function populatePortalDashboard(p) {
-  // Header
   const name = p.full_name || currentUser?.email?.split('@')[0] || 'Creator';
   const firstName = name.split(' ')[0];
-  document.getElementById('portal-firstname').textContent = firstName;
-  document.getElementById('portal-email-display').textContent = currentUser?.email || '';
-  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
-  document.getElementById('portal-avatar-big').textContent = initials;
-  document.getElementById('nav-avatar').textContent = initials;
-  document.getElementById('nav-user-name').textContent = firstName;
+  const initials  = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
+  document.getElementById('portal-firstname').textContent    = firstName;
+  document.getElementById('portal-email-display').textContent= currentUser?.email || '';
+  document.getElementById('portal-avatar-big').textContent   = initials;
+  document.getElementById('nav-avatar').textContent          = initials;
+  document.getElementById('nav-user-name').textContent       = firstName;
 
-  // Sidebar
   document.getElementById('sidebar-policy').textContent   = p.policy_number || '—';
-  document.getElementById('sidebar-platform').textContent = p.platform || '—';
-  document.getElementById('sidebar-niche').textContent    = p.niche || '—';
-  document.getElementById('sidebar-location').textContent = p.location || '—';
-  document.getElementById('sidebar-plan').textContent     = p.plan || 'No plan selected';
-  document.getElementById('sidebar-since').textContent    = p.created_at ? new Date(p.created_at).toLocaleDateString('en-KE',{year:'numeric',month:'long'}) : '—';
+  document.getElementById('sidebar-platform').textContent = p.platform       || '—';
+  document.getElementById('sidebar-niche').textContent    = p.niche          || '—';
+  document.getElementById('sidebar-location').textContent = p.location       || '—';
+  document.getElementById('sidebar-plan').textContent     = p.plan           || 'No plan selected';
+  document.getElementById('sidebar-since').textContent    = p.created_at
+    ? new Date(p.created_at).toLocaleDateString('en-KE',{year:'numeric',month:'long'}) : '—';
 
-  // Risk score
   if (p.risk_score) {
-    document.getElementById('portal-risk-num').textContent = p.risk_score.toFixed(2);
-    const cls = p.risk_score >= 2.31 ? 'Low Risk' : p.risk_score >= 1.61 ? 'Medium Risk' : 'High Risk';
+    document.getElementById('portal-risk-num').textContent   = (+p.risk_score).toFixed(2);
+    const cls = p.risk_score>=2.31?'Low Risk':p.risk_score>=1.61?'Medium Risk':'High Risk';
     document.getElementById('portal-risk-label').textContent = cls;
-    const pct = ((p.risk_score - 1) / 2) * 100;
-    document.getElementById('portal-risk-marker').style.left = pct + '%';
+    document.getElementById('portal-risk-marker').style.left = ((p.risk_score-1)/2*100)+'%';
   }
 
-  // Policy cards based on plan
-  const planMap = {
-    'Bronze': {r:'50%', w:'30 days', c:'1/yr'},
-    'Silver': {r:'55%', w:'14 days', c:'2/yr'},
-    'Gold':   {r:'60%', w:'7 days',  c:'3/yr'},
-  };
-  const planKey = Object.keys(planMap).find(k => (p.plan||'').includes(k)) || 'Gold';
-  const pm = planMap[planKey] || planMap['Gold'];
+  const planMap = { Bronze:{r:'50%',w:'30 days',c:'1/yr'}, Silver:{r:'55%',w:'14 days',c:'2/yr'}, Gold:{r:'60%',w:'7 days',c:'3/yr'} };
+  const pk = Object.keys(planMap).find(k=>(p.plan||'').includes(k)) || 'Gold';
+  const pm = planMap[pk];
   document.getElementById('pol-replacement').textContent = pm.r;
   document.getElementById('pol-waiting').textContent     = pm.w;
   document.getElementById('pol-claims').textContent      = pm.c;
 
-  // Profile form
-  const fields = {
-    'pf-name':   p.full_name,   'pf-idno':  p.id_number,
-    'pf-taxpin': p.tax_pin,     'pf-phone': p.phone,
-    'pf-biz':    p.biz_reg,     'pf-income':p.monthly_income,
-    'pf-handle': p.handle,
-  };
-  Object.entries(fields).forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el && val) el.value = val;
-  });
-  const selects = {
-    'pf-location': p.location, 'pf-platform': p.platform,
-    'pf-niche': p.niche, 'pf-plan': p.plan, 'pf-bans': p.bans_history,
-  };
-  Object.entries(selects).forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el && val) {
-      for (let i=0;i<el.options.length;i++) {
-        if (el.options[i].value === val || el.options[i].text === val) { el.selectedIndex = i; break; }
-      }
-    }
+  const textFields = {'pf-name':p.full_name,'pf-idno':p.id_number,'pf-taxpin':p.tax_pin,'pf-phone':p.phone,'pf-biz':p.biz_reg,'pf-income':p.monthly_income,'pf-handle':p.handle};
+  Object.entries(textFields).forEach(([id,val])=>{ const el=document.getElementById(id); if(el&&val) el.value=val; });
+  const selFields = {'pf-location':p.location,'pf-platform':p.platform,'pf-niche':p.niche,'pf-plan':p.plan,'pf-bans':p.bans_history};
+  Object.entries(selFields).forEach(([id,val])=>{
+    const el=document.getElementById(id); if(!el||!val) return;
+    for(let i=0;i<el.options.length;i++) if(el.options[i].value===val||el.options[i].text===val){el.selectedIndex=i;break;}
   });
 }
 
-// ─── SAVE PROFILE TO DB ───
+// ── SAVE PROFILE ─────────────────────────────────────
 async function saveProfile() {
   if (!currentUser) { toast('Please log in first.','⚠️'); return; }
   const btn = document.getElementById('save-profile-btn');
-  btn.disabled = true; btn.textContent = '💾 Saving...';
-
-  // Compute risk score from current profiler selections (if on analytics tab)
-  // Store it too
+  btn.disabled=true; btn.textContent='💾 Saving...';
   const profileData = {
     id:             currentUser.id,
     full_name:      document.getElementById('pf-name').value.trim(),
@@ -2175,63 +2194,54 @@ async function saveProfile() {
     platform:       document.getElementById('pf-platform').value,
     handle:         document.getElementById('pf-handle').value.trim(),
     niche:          document.getElementById('pf-niche').value,
-    monthly_income: parseFloat(document.getElementById('pf-income').value) || null,
+    monthly_income: parseFloat(document.getElementById('pf-income').value)||null,
     plan:           document.getElementById('pf-plan').value,
     bans_history:   document.getElementById('pf-bans').value,
+    policy_number:  currentProfile?.policy_number || ('INS-'+Date.now().toString().slice(-7))
   };
-
-  const { error } = await db.from('profiles').upsert(profileData);
-  btn.disabled = false; btn.textContent = '💾 Save Profile';
-
-  if (error) { toast('Error saving: ' + error.message, '❌'); return; }
-  currentProfile = { ...currentProfile, ...profileData };
-  populatePortalDashboard(currentProfile);
-  prefillClaimsFromProfile(currentProfile);
-  document.getElementById('profile-save-msg').style.display = '';
-  setTimeout(()=>document.getElementById('profile-save-msg').style.display='none', 3500);
-  toast('Profile saved! Claims form auto-filled ✅', '💾');
+  try {
+    await DB.upsertProfile(profileData);
+    currentProfile = {...currentProfile,...profileData};
+    populatePortalDashboard(currentProfile);
+    prefillClaimsFromProfile(currentProfile);
+    document.getElementById('profile-save-msg').style.display='';
+    setTimeout(()=>document.getElementById('profile-save-msg').style.display='none',3500);
+    toast('Profile saved! Claims form auto-filled ✅','💾');
+  } catch(e) { toast('Error saving profile.','❌'); }
+  btn.disabled=false; btn.textContent='💾 Save Profile';
 }
 
-// ─── AUTO-FILL CLAIMS FORM FROM PROFILE ───
+// ── PREFILL CLAIMS FORM ───────────────────────────────
 function prefillClaimsFromProfile(p) {
   if (!p) return;
-  const fill = (id, val) => { const el=document.getElementById(id); if(el&&val) el.value=val; };
-  fill('c-name',  p.full_name);
-  fill('c-email', currentUser?.email);
-  fill('c-phone', p.phone);
-  fill('c-idno',  p.id_number);
-  fill('c-taxpin',p.tax_pin);
-  fill('c-biz',   p.biz_reg);
-  fill('c-policy',p.policy_number);
+  const fill=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.value=val;};
+  fill('c-name',   p.full_name);
+  fill('c-email',  currentUser?.email);
+  fill('c-phone',  p.phone);
+  fill('c-idno',   p.id_number);
+  fill('c-taxpin', p.tax_pin);
+  fill('c-biz',    p.biz_reg);
+  fill('c-policy', p.policy_number);
   fill('c-handle1',p.handle);
-  // Selects
-  const setSelect = (id, val) => {
-    const el = document.getElementById(id); if(!el||!val) return;
-    for(let i=0;i<el.options.length;i++){if(el.options[i].value===val||el.options[i].text===val){el.selectedIndex=i;break;}}
+  const setSelect=(id,val)=>{
+    const el=document.getElementById(id);if(!el||!val)return;
+    for(let i=0;i<el.options.length;i++)if(el.options[i].value===val||el.options[i].text===val){el.selectedIndex=i;break;}
   };
-  setSelect('c-location', p.location);
-  setSelect('c-platform', p.platform);
-  setSelect('c-niche',    p.niche);
+  setSelect('c-location',     p.location);
+  setSelect('c-platform',     p.platform);
+  setSelect('c-niche',        p.niche);
   setSelect('c-bans-history', p.bans_history);
 }
 
-// ─── PW HELPERS ───
-function togglePw(id, btn) {
-  const el = document.getElementById(id);
-  if (el.type==='password') { el.type='text'; btn.textContent='🙈'; }
-  else { el.type='password'; btn.textContent='👁'; }
+// ── PW HELPERS ────────────────────────────────────────
+function togglePw(id,btn){const el=document.getElementById(id);if(el.type==='password'){el.type='text';btn.textContent='🙈';}else{el.type='password';btn.textContent='👁';}}
+function checkPwStrength(pw){
+  const fill=document.getElementById('strength-fill');
+  let s=0;if(pw.length>=8)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;
+  const cols=['','#ef4444','#f59e0b','#3b82f6','#10b981'];
+  fill.style.width=(s*25)+'%';fill.style.background=cols[s]||'#ef4444';
 }
-function checkPwStrength(pw) {
-  const fill = document.getElementById('strength-fill');
-  let score = 0;
-  if (pw.length >= 8) score++;
-  if (/[A-Z]/.test(pw)) score++;
-  if (/[0-9]/.test(pw)) score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const colors = ['','#ef4444','#f59e0b','#3b82f6','#10b981'];
-  fill.style.width = (score*25)+'%';
-  fill.style.background = colors[score] || '#ef4444';
-}
+
 
 // ─── TAB LOGIC ───
 function switchTab(e, tabId) {
@@ -2259,7 +2269,7 @@ function switchTab(e, tabId) {
 }
 
 // ─── EMAILJS INIT ───
-(function(){ try{ if(typeof emailjs!=="undefined" && emailjs.init) emailjs.init({publicKey:"YOUR_EMAILJS_PUBLIC_KEY"}); }catch(e){ console.warn("EmailJS not configured — email features disabled."); } })();
+(function(){emailjs.init({publicKey:"YOUR_EMAILJS_PUBLIC_KEY"});})();
 const EMAILJS_SERVICE_ID = "service_8bxr2xd";
 const EMAILJS_WAITLIST_TEMPLATE = "template_55i5bro";
 const EMAILJS_CLAIM_TEMPLATE = "template_55i5bro";
