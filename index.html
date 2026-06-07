@@ -12,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
@@ -597,26 +598,300 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
   padding-top: 15px; 
 }
 
-@media(max-width:900px){
-  nav{height: auto; padding: 15px 20px; flex-wrap: wrap; background: rgba(10,12,16,0.96);}
-  .nav-logo { flex: 1; }
-  .nav-actions { display: none; }
-  .nav-links { display: flex; width: 100%; justify-content: space-between; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 5px; overflow-x: auto; gap: 10px;}
-  .calc-grid, .chart-grid, .contact-grid, .form-grid, .method-grid, .problem-grid, .features-grid, .tiers-grid {grid-template-columns:1fr;}
-  .stats-strip{grid-template-columns:1fr 1fr;}
-  .stat-item{border-right:none;border-bottom:1px solid var(--border);}
-  .section-wrap{padding:72px 20px;}
-  .risk-profiler-grid{grid-template-columns:1fr;}
-  .risk-result-panel{grid-row:auto;}
-  .api-btns{flex-direction:column;}
-  .claim-section{padding:24px 20px;}
-  footer{grid-template-columns:1fr;text-align:left;}
-  .footer-right{text-align:left;}
-  .footer-social{justify-content:flex-start;}
+/* ══════════════════════════════════
+   AUTH SCREEN
+══════════════════════════════════ */
+#auth-screen{
+  position:fixed;inset:0;z-index:9000;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
 }
-</style>
+.auth-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:28px;padding:56px 52px;width:100%;max-width:480px;
+  position:relative;overflow:hidden;
+}
+.auth-card::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,158,11,0.12),transparent 70%);
+  pointer-events:none;
+}
+.auth-logo{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:28px;
+  color:var(--accent);margin-bottom:8px;
+}
+.auth-logo span{color:var(--text);}
+.auth-tagline{font-size:14px;color:var(--muted);margin-bottom:36px;line-height:1.5;}
+.auth-tabs{display:flex;gap:4px;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:32px;}
+.auth-tab{
+  flex:1;padding:10px;border-radius:9px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:all var(--t);color:var(--muted);background:transparent;
+}
+.auth-tab.active{background:var(--accent);color:#000;}
+.auth-field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.auth-field label{font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);}
+.auth-field input{
+  background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);padding:14px 18px;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:15px;outline:none;
+  transition:border-color var(--t);width:100%;
+}
+.auth-field input:focus{border-color:var(--accent);}
+.auth-btn{
+  width:100%;padding:16px;border-radius:14px;border:none;
+  background:var(--accent);color:#000;
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;
+  cursor:pointer;transition:all var(--t);margin-top:8px;
+}
+.auth-btn:hover{background:#fbbf24;transform:translateY(-1px);box-shadow:0 8px 24px rgba(245,158,11,0.3);}
+.auth-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.auth-divider{text-align:center;font-size:13px;color:var(--muted);margin:16px 0;}
+.auth-forgot{
+  display:block;text-align:right;font-size:13px;color:var(--accent);
+  text-decoration:none;margin-top:-10px;margin-bottom:18px;cursor:pointer;
+}
+.auth-forgot:hover{text-decoration:underline;}
+.auth-error{
+  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+  color:#ef4444;border-radius:10px;padding:12px 16px;
+  font-size:13px;margin-bottom:16px;display:none;line-height:1.4;
+}
+.auth-success-msg{
+  background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);
+  color:var(--accent3);border-radius:10px;padding:12px 16px;
+  font-size:13px;margin-bottom:16px;display:none;line-height:1.4;
+}
+.auth-footer-note{font-size:12px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.5;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:48px;}
+.pw-toggle{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;font-size:18px;color:var(--muted);
+}
+.strength-bar{height:4px;border-radius:2px;margin-top:6px;background:var(--border);overflow:hidden;}
+.strength-fill{height:100%;border-radius:2px;transition:all 0.3s;width:0;}
+
+/* ══════════════════════════════════
+   NAV — LOGGED IN STATE
+══════════════════════════════════ */
+.nav-user-pill{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:100px;padding:6px 16px 6px 6px;cursor:pointer;
+  transition:all var(--t);
+}
+.nav-user-pill:hover{border-color:var(--accent);}
+.nav-avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),#ef4444);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#000;flex-shrink:0;
+}
+.nav-user-name{font-size:13px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-dropdown{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:16px;padding:8px;min-width:200px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  opacity:0;pointer-events:none;transform:translateY(-8px);
+  transition:all 0.2s;z-index:300;
+}
+.nav-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0);}
+.nav-drop-item{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  border-radius:10px;font-size:14px;cursor:pointer;
+  transition:background var(--t);color:var(--text);text-decoration:none;
+  border:none;background:none;width:100%;text-align:left;
+}
+.nav-drop-item:hover{background:var(--surface2);}
+.nav-drop-item.danger{color:var(--danger);}
+.nav-drop-item.danger:hover{background:rgba(239,68,68,0.08);}
+.nav-drop-divider{height:1px;background:var(--border);margin:4px 0;}
+.nav-user-wrap{position:relative;}
+
+/* ══════════════════════════════════
+   CREATOR DASHBOARD (tab-portal)
+══════════════════════════════════ */
+.portal-header{
+  background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%);
+  border-bottom:1px solid var(--border);padding:80px 48px 48px;
+}
+.portal-header-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+.portal-big-avatar{
+  width:80px;height:80px;border-radius:24px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),#ef4444);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#000;
+  box-shadow:0 12px 40px rgba(245,158,11,0.3);
+}
+.portal-welcome h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.5px;}
+.portal-welcome p{font-size:14px;color:var(--muted);margin-top:4px;}
+.portal-status-pill{
+  margin-left:auto;display:flex;align-items:center;gap:8px;
+  background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);
+  color:var(--accent3);border-radius:100px;padding:8px 18px;font-size:13px;font-weight:600;
+}
+
+.portal-grid{display:grid;grid-template-columns:320px 1fr;gap:28px;max-width:1240px;margin:0 auto;padding:40px 48px;}
+.portal-sidebar{display:flex;flex-direction:column;gap:20px;}
+
+/* Sidebar cards */
+.p-card-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:24px;
+}
+.p-card-box-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.profile-field-row{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-bottom:1px solid var(--border);}
+.profile-field-row:last-child{border-bottom:none;}
+.profile-field-label{font-size:11px;color:var(--muted);font-weight:500;}
+.profile-field-val{font-size:14px;font-weight:600;color:var(--text);}
+.profile-field-val.accent{color:var(--accent);}
+.profile-field-val.green{color:var(--accent3);}
+.profile-field-val.red{color:var(--danger);}
+
+/* Risk gauge */
+.risk-gauge-wrap{text-align:center;padding:8px 0;}
+.risk-gauge-num{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1;}
+.risk-gauge-label{font-size:14px;font-weight:600;margin-top:4px;}
+.risk-gauge-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981);margin:14px 0 8px;position:relative;}
+.risk-gauge-marker{position:absolute;top:-4px;width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--accent);transform:translateX(-50%);}
+
+/* Main portal area */
+.portal-main{display:flex;flex-direction:column;gap:20px;}
+.portal-section-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:4px;}
+.portal-section-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+
+/* Profile edit form */
+.profile-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.profile-edit-grid .full{grid-column:1/-1;}
+.profile-form-field{display:flex;flex-direction:column;gap:6px;}
+.profile-form-field label{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);}
+.profile-form-field input,.profile-form-field select,.profile-form-field textarea{
+  background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);padding:12px 16px;border-radius:10px;
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;
+  transition:border-color var(--t);width:100%;
+}
+.profile-form-field input:focus,.profile-form-field select:focus{border-color:var(--accent);}
+.save-btn{
+  background:var(--accent);color:#000;border:none;
+  padding:13px 28px;border-radius:100px;
+  font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;
+  transition:all var(--t);display:inline-flex;align-items:center;gap:8px;
+}
+.save-btn:hover{background:#fbbf24;transform:translateY(-1px);}
+.save-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+/* Policy overview */
+.policy-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.policy-card{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:14px;padding:20px;text-align:center;
+}
+.policy-card-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px;}
+.policy-card-label{font-size:12px;color:var(--muted);}
+
+/* Claims history */
+.claims-history{display:flex;flex-direction:column;gap:10px;}
+.claim-history-item{
+  display:flex;align-items:center;gap:16px;padding:16px 20px;
+  background:var(--bg);border:1px solid var(--border);border-radius:12px;
+}
+.claim-hist-ref{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);font-weight:600;}
+.claim-hist-type{font-size:14px;font-weight:500;}
+.claim-hist-date{font-size:12px;color:var(--muted);margin-left:auto;}
+.claim-hist-status{
+  font-size:11px;font-weight:700;letter-spacing:0.06em;
+  padding:4px 10px;border-radius:100px;
+}
+.status-pending{background:rgba(245,158,11,0.1);color:var(--accent);}
+.status-approved{background:rgba(16,185,129,0.1);color:var(--accent3);}
+.status-review{background:rgba(59,130,246,0.1);color:var(--accent2);}
+.no-claims-empty{
+  text-align:center;padding:40px;color:var(--muted);
+  font-size:15px;border:1px dashed var(--border2);border-radius:14px;
+}
+
+@media(max-width:900px){
+  .portal-grid{grid-template-columns:1fr;padding:24px 20px;}
+  .policy-cards{grid-template-columns:1fr 1fr;}
+  .profile-edit-grid{grid-template-columns:1fr;}
+  .portal-header{padding:80px 20px 32px;}
+  .auth-card{padding:36px 24px;}
+}
+
+@keyframes authShake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
+.shake{animation:authShake 0.4s ease;}
+
 </head>
 <body>
+
+<!-- ══ AUTH SCREEN ══ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">INSU<span>TOK</span></div>
+    <div class="auth-tagline">Creator Portal — Your policy, profile, and claims in one place.</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Log In</button>
+      <button class="auth-tab" id="auth-tab-register" onclick="switchAuthTab('register')">Create Account</button>
+    </div>
+
+    <div id="auth-error" class="auth-error"></div>
+    <div id="auth-success" class="auth-success-msg"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="auth-form-login">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="login-pw" placeholder="Your password" autocomplete="current-password"/>
+          <button class="pw-toggle" onclick="togglePw('login-pw',this)" type="button">👁</button>
+        </div>
+      </div>
+      <span class="auth-forgot" onclick="handleForgotPassword()">Forgot password?</span>
+      <button class="auth-btn" id="login-btn" onclick="handleLogin()">Log In to Portal →</button>
+      <div class="auth-footer-note">New creator? Click <strong>Create Account</strong> above.</div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="auth-form-register" style="display:none;">
+      <div class="auth-field">
+        <label>Full Name</label>
+        <input type="text" id="reg-name" placeholder="Your full legal name" autocomplete="name"/>
+      </div>
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="reg-email" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="reg-pw" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkPwStrength(this.value)"/>
+          <button class="pw-toggle" onclick="togglePw('reg-pw',this)" type="button">👁</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+      </div>
+      <div class="auth-field">
+        <label>Confirm Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="reg-pw2" placeholder="Repeat your password" autocomplete="new-password"/>
+          <button class="pw-toggle" onclick="togglePw('reg-pw2',this)" type="button">👁</button>
+        </div>
+      </div>
+      <button class="auth-btn" id="register-btn" onclick="handleRegister()">Create My Account →</button>
+      <div class="auth-footer-note">Already have an account? Click <strong>Log In</strong> above.<br/>By registering you agree to our terms and privacy policy.</div>
+    </div>
+
+  </div>
+</div>
 
 <a class="fab-wa" href="https://wa.me/254795163954?text=Hi%20INSUTOK!%20I%27m%20interested%20in%20income%20interruption%20insurance%20for%20content%20creators." target="_blank" title="Chat on WhatsApp">💬</a>
 
@@ -626,11 +901,27 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
     <li><a href="#" class="tab-link active" onclick="switchTab(event, 'tab-overview')">Overview</a></li>
     <li><a href="#" class="tab-link" onclick="switchTab(event, 'tab-pricing')">Pricing & Math</a></li>
     <li><a href="#" class="tab-link" onclick="switchTab(event, 'tab-analytics')">Analytics & Risk</a></li>
+    <li><a href="#" class="tab-link" id="nav-portal-link" onclick="switchTab(event, 'tab-portal')">My Portal</a></li>
     <li><a href="#" class="tab-link" onclick="switchTab(event, 'tab-support')">Claims & Support</a></li>
   </ul>
   <div class="nav-actions">
     <a class="nav-wa" href="https://wa.me/254795163954?text=Hi%20INSUTOK!" target="_blank">💬 WhatsApp</a>
-    <button class="nav-cta" onclick="openModal()">Join Waitlist</button>
+    <!-- Logged-out state -->
+    <button class="nav-cta" id="nav-login-btn" onclick="document.getElementById('auth-screen').style.display='flex'">Log In / Register</button>
+    <!-- Logged-in state (hidden until login) -->
+    <div class="nav-user-wrap" id="nav-user-wrap" style="display:none;">
+      <div class="nav-user-pill" onclick="toggleNavDropdown()">
+        <div class="nav-avatar" id="nav-avatar">?</div>
+        <span class="nav-user-name" id="nav-user-name">Creator</span>
+        <span style="color:var(--muted);font-size:12px;">▾</span>
+      </div>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <button class="nav-drop-item" onclick="switchTab(null,'tab-portal');toggleNavDropdown()">👤 My Profile</button>
+        <button class="nav-drop-item" onclick="switchTab(null,'tab-support');toggleNavDropdown()">📋 File a Claim</button>
+        <div class="nav-drop-divider"></div>
+        <button class="nav-drop-item danger" onclick="handleLogout()">🚪 Log Out</button>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -1325,6 +1616,151 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
   </section>
 </div>
 
+<!-- ══ CREATOR PORTAL TAB ══ -->
+<div id="tab-portal" class="tab-content">
+  <div class="portal-header">
+    <div class="portal-header-inner">
+      <div class="portal-big-avatar" id="portal-avatar-big">?</div>
+      <div class="portal-welcome">
+        <h1>Welcome back, <span id="portal-firstname">Creator</span> 👋</h1>
+        <p id="portal-email-display">Loading your profile...</p>
+      </div>
+      <div class="portal-status-pill">
+        <span>●</span> Active Policyholder
+      </div>
+    </div>
+  </div>
+
+  <div class="portal-grid">
+
+    <!-- SIDEBAR -->
+    <div class="portal-sidebar">
+
+      <!-- Risk Score Widget -->
+      <div class="p-card-box">
+        <div class="p-card-box-title">Your Risk Score</div>
+        <div class="risk-gauge-wrap">
+          <div class="risk-gauge-num" id="portal-risk-num" style="background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;background-clip:text;color:transparent;">—</div>
+          <div class="risk-gauge-label" id="portal-risk-label">Not calculated</div>
+          <div class="risk-gauge-bar">
+            <div class="risk-gauge-marker" id="portal-risk-marker" style="left:50%;"></div>
+          </div>
+          <button class="save-btn" style="width:100%;justify-content:center;margin-top:8px;font-size:13px;padding:10px;" onclick="switchTab(null,'tab-analytics')">Run Risk Profiler →</button>
+        </div>
+      </div>
+
+      <!-- Quick Profile Summary -->
+      <div class="p-card-box">
+        <div class="p-card-box-title">Profile Summary</div>
+        <div class="profile-field-row"><div class="profile-field-label">Policy Number</div><div class="profile-field-val accent" id="sidebar-policy">—</div></div>
+        <div class="profile-field-row"><div class="profile-field-label">Platform</div><div class="profile-field-val" id="sidebar-platform">—</div></div>
+        <div class="profile-field-row"><div class="profile-field-label">Content Niche</div><div class="profile-field-val" id="sidebar-niche">—</div></div>
+        <div class="profile-field-row"><div class="profile-field-label">Location</div><div class="profile-field-val" id="sidebar-location">—</div></div>
+        <div class="profile-field-row"><div class="profile-field-label">Coverage Plan</div><div class="profile-field-val green" id="sidebar-plan">—</div></div>
+        <div class="profile-field-row"><div class="profile-field-label">Member Since</div><div class="profile-field-val" id="sidebar-since">—</div></div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="p-card-box">
+        <div class="p-card-box-title">Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="save-btn" style="width:100%;justify-content:center;font-size:13px;padding:11px;" onclick="switchTab(null,'tab-support')">📋 File a Claim</button>
+          <button class="save-btn" style="width:100%;justify-content:center;font-size:13px;padding:11px;background:var(--surface);color:var(--text);border:1px solid var(--border2);" onclick="switchTab(null,'tab-pricing')">🧮 Premium Calculator</button>
+          <button class="save-btn" style="width:100%;justify-content:center;font-size:13px;padding:11px;background:var(--surface);color:var(--text);border:1px solid var(--border2);" onclick="window.open('https://wa.me/254795163954?text=Hi%20INSUTOK!%20I%20need%20help%20with%20my%20policy.','_blank')">💬 WhatsApp Support</button>
+        </div>
+      </div>
+
+    </div><!-- end sidebar -->
+
+    <!-- MAIN CONTENT -->
+    <div class="portal-main">
+
+      <!-- Policy Overview -->
+      <div class="p-card-box">
+        <div class="portal-section-title">Policy Overview</div>
+        <div class="portal-section-sub">Your current coverage at a glance</div>
+        <div class="policy-cards">
+          <div class="policy-card"><div class="policy-card-num" id="pol-replacement">—</div><div class="policy-card-label">Income Replacement</div></div>
+          <div class="policy-card"><div class="policy-card-num" id="pol-waiting">—</div><div class="policy-card-label">Waiting Period</div></div>
+          <div class="policy-card"><div class="policy-card-num" id="pol-claims">—</div><div class="policy-card-label">Max Claims/Year</div></div>
+        </div>
+      </div>
+
+      <!-- Edit Profile Form -->
+      <div class="p-card-box">
+        <div class="portal-section-title">My KYC Profile</div>
+        <div class="portal-section-sub">Update your details — saved automatically to your account. These auto-fill your claims form.</div>
+        <div id="profile-save-msg" style="display:none;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--accent3);border-radius:10px;padding:12px 16px;font-size:13px;margin-bottom:16px;">✅ Profile saved successfully!</div>
+        <div class="profile-edit-grid">
+          <div class="profile-form-field"><label>Full Legal Name</label><input type="text" id="pf-name" placeholder="As on National ID"/></div>
+          <div class="profile-form-field"><label>National ID Number</label><input type="text" id="pf-idno" placeholder="e.g. 12345678"/></div>
+          <div class="profile-form-field"><label>KRA Tax PIN</label><input type="text" id="pf-taxpin" placeholder="e.g. A001234567B"/></div>
+          <div class="profile-form-field"><label>Phone / M-PESA</label><input type="tel" id="pf-phone" placeholder="+254 7XX XXX XXX"/></div>
+          <div class="profile-form-field"><label>Business Reg. No. (optional)</label><input type="text" id="pf-biz" placeholder="e.g. BN/2024/XXXXX"/></div>
+          <div class="profile-form-field"><label>County / Location</label>
+            <select id="pf-location">
+              <option value="">Select county</option>
+              <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option>
+              <option>Nakuru</option><option>Eldoret</option><option>Thika</option>
+              <option>Nyeri</option><option>Meru</option><option>Kisii</option>
+              <option>Kakamega</option><option>Other</option>
+            </select>
+          </div>
+          <div class="profile-form-field"><label>Primary Platform</label>
+            <select id="pf-platform">
+              <option value="">Select platform</option>
+              <option>TikTok</option><option>YouTube</option><option>Instagram</option>
+              <option>Twitter/X</option><option>Facebook</option><option>Multiple</option>
+            </select>
+          </div>
+          <div class="profile-form-field"><label>Platform Handle</label><input type="text" id="pf-handle" placeholder="@yourcreatorname"/></div>
+          <div class="profile-form-field"><label>Content Niche</label>
+            <select id="pf-niche">
+              <option value="">Select niche</option>
+              <option>Comedy / Entertainment</option><option>Education / Tutorials</option>
+              <option>Lifestyle / Vlogging</option><option>Fashion / Beauty</option>
+              <option>Gaming</option><option>News / Commentary</option>
+              <option>Music / Arts</option><option>Food / Cooking</option>
+              <option>Tech / Reviews</option><option>Travel</option><option>Other</option>
+            </select>
+          </div>
+          <div class="profile-form-field"><label>Avg. Monthly Income (KSh)</label><input type="number" id="pf-income" placeholder="e.g. 75000"/></div>
+          <div class="profile-form-field"><label>Coverage Plan</label>
+            <select id="pf-plan">
+              <option value="">Select plan</option>
+              <option>Bronze – Starter (KSh 18,000/yr)</option>
+              <option>Silver – Growth (KSh 27,000/yr)</option>
+              <option>Gold – Professional (KSh 36,000/yr)</option>
+            </select>
+          </div>
+          <div class="profile-form-field"><label>Bans in Past 24 Months</label>
+            <select id="pf-bans">
+              <option value="0">0 — Clean record</option>
+              <option value="1">1 ban / strike</option>
+              <option value="2">2 bans / strikes</option>
+              <option value="3">3+ bans / strikes</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;align-items:center;">
+          <button class="save-btn" id="save-profile-btn" onclick="saveProfile()">💾 Save Profile</button>
+          <span style="font-size:13px;color:var(--muted);">Changes auto-fill your claims form</span>
+        </div>
+      </div>
+
+      <!-- Claims History -->
+      <div class="p-card-box">
+        <div class="portal-section-title">Claims History</div>
+        <div class="portal-section-sub">All claims submitted under your account</div>
+        <div class="claims-history" id="claims-history-list">
+          <div class="no-claims-empty">📋 No claims submitted yet.<br/>When you file a claim, it will appear here with its status.</div>
+        </div>
+      </div>
+
+    </div><!-- end main -->
+  </div><!-- end portal-grid -->
+</div>
+
 <footer>
   <div class="footer-brand">
     <div class="logo">INSU<span>TOK</span></div>
@@ -1447,6 +1883,334 @@ footer{border-top:1px solid var(--border);padding:56px 48px;display:grid;grid-te
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════
+// SUPABASE CONFIG
+// ── SETUP INSTRUCTIONS ──────────────────────────────
+// 1. Go to https://supabase.com → Create free account
+// 2. New Project → name it "insutok"
+// 3. Go to Settings → API → copy your URL and anon key below
+// 4. Go to SQL Editor → run this SQL to create the profiles table:
+//
+//    create table profiles (
+//      id uuid references auth.users on delete cascade primary key,
+//      full_name text, id_number text, tax_pin text,
+//      biz_reg text, location text, phone text,
+//      platform text, handle text, niche text,
+//      monthly_income numeric, plan text, bans_history text,
+//      risk_score numeric, policy_number text,
+//      created_at timestamptz default now()
+//    );
+//    alter table profiles enable row level security;
+//    create policy "Users own their profile"
+//      on profiles for all using (auth.uid() = id);
+//
+// 5. Replace the two values below with your real keys:
+// ────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://xoclnztwahmmyvxsyedq.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvY2xuenR3YWhtbXl2eHN5ZWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4MzMwMDQsImV4cCI6MjA5NjQwOTAwNH0.tCvHqIYxttSj3QjpePqrKYq8daSF0-IGJtGrKUv3VZ8';
+// ══════════════════════════════════════════════════════
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentProfile = null;
+
+// ─── AUTH: INIT ── check if already logged in ───
+(async () => {
+  const { data: { session } } = await db.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    await onLoggedIn(currentUser);
+  } else {
+    showAuthScreen();
+  }
+  db.auth.onAuthStateChange(async (_event, session) => {
+    if (session?.user) {
+      currentUser = session.user;
+      await onLoggedIn(currentUser);
+    }
+  });
+})();
+
+function showAuthScreen() {
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+async function onLoggedIn(user) {
+  document.getElementById('auth-screen').style.display = 'none';
+  // Update nav
+  const name = user.user_metadata?.full_name || user.email.split('@')[0];
+  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('nav-login-btn').style.display = 'none';
+  document.getElementById('nav-user-wrap').style.display = 'flex';
+  document.getElementById('nav-avatar').textContent = initials;
+  document.getElementById('nav-user-name').textContent = name.split(' ')[0];
+  // Load profile from DB
+  await loadProfile(user.id);
+}
+
+// ─── AUTH TABS ───
+function switchAuthTab(tab) {
+  document.getElementById('auth-form-login').style.display    = tab==='login'    ? '' : 'none';
+  document.getElementById('auth-form-register').style.display = tab==='register' ? '' : 'none';
+  document.getElementById('auth-tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('auth-tab-register').classList.toggle('active', tab==='register');
+  clearAuthMessages();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+  el.parentElement.classList.add('shake');
+  setTimeout(()=>el.parentElement.classList.remove('shake'),400);
+  document.getElementById('auth-success').style.display = 'none';
+}
+function showAuthSuccess(msg) {
+  const el = document.getElementById('auth-success');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('auth-error').style.display = 'none';
+}
+function clearAuthMessages() {
+  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-success').style.display = 'none';
+}
+
+// ─── REGISTER ───
+async function handleRegister() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw    = document.getElementById('reg-pw').value;
+  const pw2   = document.getElementById('reg-pw2').value;
+  clearAuthMessages();
+  if (!name || !email || !pw)        { showAuthError('Please fill in all fields.'); return; }
+  if (pw.length < 8)                 { showAuthError('Password must be at least 8 characters.'); return; }
+  if (pw !== pw2)                    { showAuthError('Passwords do not match.'); return; }
+
+  const btn = document.getElementById('register-btn');
+  btn.disabled = true; btn.textContent = 'Creating account...';
+
+  const { data, error } = await db.auth.signUp({
+    email, password: pw,
+    options: { data: { full_name: name } }
+  });
+
+  btn.disabled = false; btn.textContent = 'Create My Account →';
+  if (error) { showAuthError(error.message); return; }
+
+  // Create blank profile row
+  if (data.user) {
+    const policyNum = 'INS-' + Date.now().toString().slice(-7);
+    await db.from('profiles').upsert({
+      id: data.user.id,
+      full_name: name,
+      policy_number: policyNum
+    });
+  }
+  showAuthSuccess('✅ Account created! Check your email to confirm, then log in.');
+}
+
+// ─── LOGIN ───
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw    = document.getElementById('login-pw').value;
+  clearAuthMessages();
+  if (!email || !pw) { showAuthError('Please enter your email and password.'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'Logging in...';
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
+  btn.disabled = false; btn.textContent = 'Log In to Portal →';
+  if (error) { showAuthError('Incorrect email or password. Please try again.'); return; }
+  currentUser = data.user;
+  await onLoggedIn(currentUser);
+}
+
+// ─── FORGOT PASSWORD ───
+async function handleForgotPassword() {
+  const email = document.getElementById('login-email').value.trim();
+  if (!email) { showAuthError('Enter your email address first, then click Forgot Password.'); return; }
+  const { error } = await db.auth.resetPasswordForEmail(email);
+  if (error) showAuthError(error.message);
+  else showAuthSuccess('✅ Password reset email sent! Check your inbox.');
+}
+
+// ─── LOGOUT ───
+async function handleLogout() {
+  await db.auth.signOut();
+  currentUser = null; currentProfile = null;
+  document.getElementById('nav-login-btn').style.display = '';
+  document.getElementById('nav-user-wrap').style.display = 'none';
+  document.getElementById('nav-dropdown').classList.remove('open');
+  switchTab(null, 'tab-overview');
+  showAuthScreen();
+  toast('Logged out successfully.', '👋');
+}
+
+// ─── NAV DROPDOWN ───
+function toggleNavDropdown() {
+  document.getElementById('nav-dropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('nav-user-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('nav-dropdown').classList.remove('open');
+  }
+});
+
+// ─── LOAD PROFILE FROM DB ───
+async function loadProfile(userId) {
+  const { data, error } = await db.from('profiles').select('*').eq('id', userId).single();
+  if (error || !data) return;
+  currentProfile = data;
+  populatePortalDashboard(data);
+  // Also pre-fill the claims form
+  prefillClaimsFromProfile(data);
+}
+
+function populatePortalDashboard(p) {
+  // Header
+  const name = p.full_name || currentUser?.email?.split('@')[0] || 'Creator';
+  const firstName = name.split(' ')[0];
+  document.getElementById('portal-firstname').textContent = firstName;
+  document.getElementById('portal-email-display').textContent = currentUser?.email || '';
+  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
+  document.getElementById('portal-avatar-big').textContent = initials;
+  document.getElementById('nav-avatar').textContent = initials;
+  document.getElementById('nav-user-name').textContent = firstName;
+
+  // Sidebar
+  document.getElementById('sidebar-policy').textContent   = p.policy_number || '—';
+  document.getElementById('sidebar-platform').textContent = p.platform || '—';
+  document.getElementById('sidebar-niche').textContent    = p.niche || '—';
+  document.getElementById('sidebar-location').textContent = p.location || '—';
+  document.getElementById('sidebar-plan').textContent     = p.plan || 'No plan selected';
+  document.getElementById('sidebar-since').textContent    = p.created_at ? new Date(p.created_at).toLocaleDateString('en-KE',{year:'numeric',month:'long'}) : '—';
+
+  // Risk score
+  if (p.risk_score) {
+    document.getElementById('portal-risk-num').textContent = p.risk_score.toFixed(2);
+    const cls = p.risk_score >= 2.31 ? 'Low Risk' : p.risk_score >= 1.61 ? 'Medium Risk' : 'High Risk';
+    document.getElementById('portal-risk-label').textContent = cls;
+    const pct = ((p.risk_score - 1) / 2) * 100;
+    document.getElementById('portal-risk-marker').style.left = pct + '%';
+  }
+
+  // Policy cards based on plan
+  const planMap = {
+    'Bronze': {r:'50%', w:'30 days', c:'1/yr'},
+    'Silver': {r:'55%', w:'14 days', c:'2/yr'},
+    'Gold':   {r:'60%', w:'7 days',  c:'3/yr'},
+  };
+  const planKey = Object.keys(planMap).find(k => (p.plan||'').includes(k)) || 'Gold';
+  const pm = planMap[planKey] || planMap['Gold'];
+  document.getElementById('pol-replacement').textContent = pm.r;
+  document.getElementById('pol-waiting').textContent     = pm.w;
+  document.getElementById('pol-claims').textContent      = pm.c;
+
+  // Profile form
+  const fields = {
+    'pf-name':   p.full_name,   'pf-idno':  p.id_number,
+    'pf-taxpin': p.tax_pin,     'pf-phone': p.phone,
+    'pf-biz':    p.biz_reg,     'pf-income':p.monthly_income,
+    'pf-handle': p.handle,
+  };
+  Object.entries(fields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+  });
+  const selects = {
+    'pf-location': p.location, 'pf-platform': p.platform,
+    'pf-niche': p.niche, 'pf-plan': p.plan, 'pf-bans': p.bans_history,
+  };
+  Object.entries(selects).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) {
+      for (let i=0;i<el.options.length;i++) {
+        if (el.options[i].value === val || el.options[i].text === val) { el.selectedIndex = i; break; }
+      }
+    }
+  });
+}
+
+// ─── SAVE PROFILE TO DB ───
+async function saveProfile() {
+  if (!currentUser) { toast('Please log in first.','⚠️'); return; }
+  const btn = document.getElementById('save-profile-btn');
+  btn.disabled = true; btn.textContent = '💾 Saving...';
+
+  // Compute risk score from current profiler selections (if on analytics tab)
+  // Store it too
+  const profileData = {
+    id:             currentUser.id,
+    full_name:      document.getElementById('pf-name').value.trim(),
+    id_number:      document.getElementById('pf-idno').value.trim(),
+    tax_pin:        document.getElementById('pf-taxpin').value.trim(),
+    biz_reg:        document.getElementById('pf-biz').value.trim(),
+    location:       document.getElementById('pf-location').value,
+    phone:          document.getElementById('pf-phone').value.trim(),
+    platform:       document.getElementById('pf-platform').value,
+    handle:         document.getElementById('pf-handle').value.trim(),
+    niche:          document.getElementById('pf-niche').value,
+    monthly_income: parseFloat(document.getElementById('pf-income').value) || null,
+    plan:           document.getElementById('pf-plan').value,
+    bans_history:   document.getElementById('pf-bans').value,
+  };
+
+  const { error } = await db.from('profiles').upsert(profileData);
+  btn.disabled = false; btn.textContent = '💾 Save Profile';
+
+  if (error) { toast('Error saving: ' + error.message, '❌'); return; }
+  currentProfile = { ...currentProfile, ...profileData };
+  populatePortalDashboard(currentProfile);
+  prefillClaimsFromProfile(currentProfile);
+  document.getElementById('profile-save-msg').style.display = '';
+  setTimeout(()=>document.getElementById('profile-save-msg').style.display='none', 3500);
+  toast('Profile saved! Claims form auto-filled ✅', '💾');
+}
+
+// ─── AUTO-FILL CLAIMS FORM FROM PROFILE ───
+function prefillClaimsFromProfile(p) {
+  if (!p) return;
+  const fill = (id, val) => { const el=document.getElementById(id); if(el&&val) el.value=val; };
+  fill('c-name',  p.full_name);
+  fill('c-email', currentUser?.email);
+  fill('c-phone', p.phone);
+  fill('c-idno',  p.id_number);
+  fill('c-taxpin',p.tax_pin);
+  fill('c-biz',   p.biz_reg);
+  fill('c-policy',p.policy_number);
+  fill('c-handle1',p.handle);
+  // Selects
+  const setSelect = (id, val) => {
+    const el = document.getElementById(id); if(!el||!val) return;
+    for(let i=0;i<el.options.length;i++){if(el.options[i].value===val||el.options[i].text===val){el.selectedIndex=i;break;}}
+  };
+  setSelect('c-location', p.location);
+  setSelect('c-platform', p.platform);
+  setSelect('c-niche',    p.niche);
+  setSelect('c-bans-history', p.bans_history);
+}
+
+// ─── PW HELPERS ───
+function togglePw(id, btn) {
+  const el = document.getElementById(id);
+  if (el.type==='password') { el.type='text'; btn.textContent='🙈'; }
+  else { el.type='password'; btn.textContent='👁'; }
+}
+function checkPwStrength(pw) {
+  const fill = document.getElementById('strength-fill');
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const colors = ['','#ef4444','#f59e0b','#3b82f6','#10b981'];
+  fill.style.width = (score*25)+'%';
+  fill.style.background = colors[score] || '#ef4444';
+}
+
 // ─── TAB LOGIC ───
 function switchTab(e, tabId) {
   if(e) e.preventDefault();
